@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechAZsure | Financial Settlement Intelligence (Industrial Grade)</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --tz-primary: #0ea5e9;
+            --tz-primary-glow: rgba(14, 165, 233, 0.4);
+            --tz-bg: #020617;
+            --tz-sidebar: #0f172a;
+            --tz-card: #1e293b;
+            --tz-border: #334155;
+            --tz-text: #f1f5f9;
+            --tz-text-muted: #94a3b8;
+            --tz-success: #10b981;
+            --tz-danger: #ef4444;
+            --tz-warning: #f59e0b;
+            --tz-info: #06b6d4;
+
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-industrial: 0 40px 80px -20px rgba(0, 0, 0, 0.9);
+            --glass-bg: rgba(15, 23, 42, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; border: none; outline: none !important; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--tz-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--tz-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--tz-primary); }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--tz-bg);
+            color: var(--tz-text);
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .top-nav {
+            background: var(--tz-sidebar);
+            border-bottom: 1px solid var(--tz-border);
+            padding: 1.25rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 3000;
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-zone { display: flex; align-items: center; gap: 15px; text-decoration: none; }
+        .logo-frame {
+            width: 44px; height: 42px;
+            background: linear-gradient(135deg, var(--tz-primary), var(--tz-info));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 25px var(--tz-primary-glow);
+        }
+
+        .area-hero {
+            padding: 6rem 4rem; 
+            background: linear-gradient(145deg, #0f172a 0%, #020617 100%);
+            border-bottom: 2px solid var(--tz-border);
+            position: relative; overflow: hidden;
+        }
+        .hero-bg-fx { 
+            position: absolute; top: -30%; right: -5%; width: 55%; height: 160%; 
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 75%); 
+            filter: blur(80px); pointer-events: none; 
+        }
+
+        .status-badge-live {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--tz-success);
+            border: 1px solid var(--tz-success);
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .live-dot { width: 8px; height: 8px; background: var(--tz-success); border-radius: 50%; box-shadow: 0 0 12px var(--tz-success); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; margin-top: -4.5rem; padding: 0 4rem; position: relative; z-index: 100; }
+        .metric-card {
+            background: var(--glass-bg); backdrop-filter: blur(40px);
+            border: 1.5px solid var(--glass-border); border-radius: 2.75rem;
+            padding: 3rem; transition: var(--transition-smooth);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .metric-card:hover { transform: translateY(-12px); border-color: var(--tz-primary); box-shadow: var(--shadow-industrial); }
+
+        .m-tag { font-size: 0.7rem; font-weight: 900; color: var(--tz-text-muted); text-transform: uppercase; letter-spacing: 0.2em; display: block; margin-bottom: 1.5rem; }
+        .m-val { font-size: 3.25rem; font-weight: 900; color: white; line-height: 1; letter-spacing: -0.05em; display: flex; align-items: baseline; }
+        .m-unit { font-size: 1.15rem; color: var(--tz-text-muted); font-weight: 700; margin-left: 10px; }
+        .m-trend { font-size: 0.9rem; margin-top: 1.5rem; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+
+        .main-container { padding: 5rem 4rem; }
+        .data-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
+        .data-section-title { font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; gap: 20px; }
+
+        .analytics-block { display: grid; grid-template-columns: 2.2fr 1fr; gap: 2.5rem; margin-bottom: 4rem; }
+        .chart-card { background: var(--tz-card); border: 1.5px solid var(--tz-border); border-radius: 3rem; padding: 3.5rem; position: relative; }
+
+        .revenue-matrix { background: rgba(255,255,255,0.02); border: 1.5px solid var(--tz-border); border-radius: 3rem; padding: 3rem; }
+        .rev-row { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .rev-row:last-child { border-bottom: none; }
+        .rev-icon-box { width: 48px; height: 48px; border-radius: 12px; background: rgba(16, 185, 129, 0.12); display: flex; align-items: center; justify-content: center; color: var(--tz-success); }
+        .rev-label { font-weight: 700; font-size: 1rem; }
+        .rev-count { font-family: 'JetBrains Mono', monospace; font-weight: 900; color: var(--tz-success); font-size: 1.3rem; }
+
+        .audit-frame { background: #01040a; border: 2px solid var(--tz-border); border-radius: 3rem; padding: 4rem; box-shadow: inset 0 0 80px rgba(0,0,0,0.8); }
+        .audit-log { max-height: 600px; overflow-y: auto; padding-right: 2rem; scrollbar-width: thin; }
+        .audit-line { display: flex; align-items: center; gap: 40px; padding: 1.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); transition: var(--transition-smooth); }
+        .audit-line:hover { background: rgba(14, 165, 233, 0.02); padding-left: 1rem; }
+        .a-ts { color: var(--tz-text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-width: 240px; }
+        .a-code { background: rgba(14, 165, 233, 0.12); color: var(--tz-primary); padding: 8px 18px; border-radius: 10px; font-weight: 900; font-size: 0.75rem; border: 1.5px solid var(--tz-primary); min-width: 180px; text-align: center; letter-spacing: 0.05em; }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .fw-black { font-weight: 900; }
+        .text-glow { text-shadow: 0 0 30px var(--tz-primary-glow); }
+        .btn-action-industrial { background: var(--tz-primary); color: white; padding: 1rem 3rem; border-radius: 1.5rem; font-weight: 900; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.2em; transition: var(--transition-smooth); box-shadow: 0 15px 30px var(--tz-primary-glow); }
+        .btn-action-industrial:hover { transform: translateY(-5px); background: white; color: var(--tz-primary); box-shadow: 0 20px 40px rgba(255,255,255,0.2); }
+
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="d-flex align-items-center gap-5">
+        <a href="index.html" class="brand-zone">
+            <div class="logo-frame"><i data-lucide="zap" color="white" size="28"></i></div>
+            <div>
+                <h4 class="m-0 fw-black text-white">GridSense</h4>
+                <span class="text-primary small fw-black tracking-widest" style="font-size: 0.65rem;">FINANCIAL HUB</span>
+            </div>
+        </a>
+        <div class="d-none d-xl-flex gap-5">
+            <a href="index.html" class="text-muted text-decoration-none small fw-black tracking-widest">CLUSTER HUB</a>
+            <a href="load_balancing.html" class="text-muted text-decoration-none small fw-black tracking-widest">PART A: LOAD SHIFT</a>
+            <a href="asset_roadmap.html" class="text-muted text-decoration-none small fw-black tracking-widest">PART B: ROADMAP</a>
+            <a href="#" class="text-white text-decoration-none small fw-black tracking-widest border-bottom border-primary pb-1">FINANCIAL ROI</a>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-5">
+        <div class="status-badge-live">
+            <div class="live-dot"></div>
+            <span class="mono">SETTLEMENT_ENGINE: NOMINAL</span>
+        </div>
+        <button class="btn-action-industrial" onclick="window.print()">AUDIT REPORT</button>
+    </div>
+</nav>
+
+<section class="area-hero">
+    <div class="hero-bg-fx"></div>
+    <div class="row align-items-center position-relative">
+        <div class="col-lg-8">
+            <div class="badge bg-success bg-opacity-10 text-success fw-black px-4 py-2 mb-4" style="font-size: 12px; letter-spacing: 0.25em; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">GOVERNMENT CLEARINGHOUSE PORTAL</div>
+            <h1 class="display-1 fw-black text-white m-0" style="letter-spacing: -0.04em;">FINANCIAL ROI</h1>
+            <p class="text-muted display-6 mt-3 fw-bold">Dynamic Revenue Settlement & Peak Surcharge Analytics</p>
+            
+            <div class="d-flex gap-5 mt-5 pt-4">
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Tariff Schema</span>
+                    <span class="text-cyan fw-bold fs-3">ToU v2.5 (DYNAMIC)</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Daily Settlement</span>
+                    <span class="text-emerald fw-bold fs-3">₹1,58,420 (NET)</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Fiscal Year</span>
+                    <span class="text-primary fw-bold fs-3">FY 2026-2027</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 text-end">
+            <div class="metric-card d-inline-block text-start p-5" style="min-width: 420px; border-radius: 3.5rem;">
+                <span class="m-tag mb-4">Optimization Profit Yield</span>
+                <div class="d-flex align-items-center gap-5">
+                    <div style="width:140px; height:140px; border: 10px solid #0f172a; border-radius: 50%; display:flex; align-items:center; justify-content:center; flex-direction:column; position:relative;">
+                         <div class="stat-value text-success display-3 fw-black">14%</div>
+                         <span class="x-small text-muted fw-bold">INCREASE</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div style="height: 16px; background: #020617; border-radius: 30px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08);">
+                            <div style="height: 100%; width: 78%; background: var(--tz-success);"></div>
+                        </div>
+                        <span class="x-small text-muted mono fw-black mt-3 d-block">ROI INDEX: HIGH PERFORMANCE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="metric-grid">
+    <div class="metric-card">
+        <span class="m-tag">Aggregated Revenue</span>
+        <div class="m-val text-glow">₹<span id="metric-rev">1,58,420</span></div>
+        <div class="m-trend text-success"><i data-lucide="trending-up" size="18"></i> +12.4% vs Baseline</div>
+    </div>
+    <div class="metric-card">
+        <span class="m-tag">Peak Surcharge Yield</span>
+        <div class="m-val">₹<span id="metric-peak">38,250</span></div>
+        <div class="m-trend text-info"><i data-lucide="activity" size="18"></i> ToU Logic Active</div>
+    </div>
+    <div class="metric-card border-danger border-opacity-40">
+        <span class="m-tag text-danger">T&C Revenue Leakage</span>
+        <div class="m-val text-danger">₹<span id="metric-leak">12,405</span></div>
+        <div class="m-trend text-danger fw-black">RECOVERABLE VIA PART B</div>
+    </div>
+    <div class="metric-card border-emerald border-opacity-40">
+        <span class="m-tag text-emerald">Carbon Credit Value</span>
+        <div class="m-val text-emerald">₹<span id="metric-carbon">1,402</span></div>
+        <div class="m-trend text-emerald fw-bold"><i data-lucide="leaf" size="18"></i> ESG Compliance Pass</div>
+    </div>
+</section>
+
+<main class="main-container">
+    
+    <div class="data-section-header">
+        <h2 class="data-section-title"><i data-lucide="indian-rupee" class="text-primary"></i> Hub Settlement Matrix</h2>
+        <div class="badge bg-dark border border-secondary px-4 py-2 mono fw-black text-muted">SETTLEMENT_CYCLE: REAL-TIME_POST</div>
+    </div>
+
+    <div class="analytics-block">
+
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h4 class="fw-black m-0 fs-3">Intraday Revenue Curve</h4>
+                    <span class="text-muted small fw-bold tracking-widest uppercase">Base Revenue vs Surcharge Optimized Yield</span>
+                </div>
+                <div class="badge bg-danger px-3 py-2 fs-6 d-flex align-items-center gap-2">
+                    <div style="width:8px; height:8px; background:white; border-radius:50%; animation: pulse 1s infinite;"></div>
+                    LIVE LEDGER
+                </div>
+            </div>
+            <div style="height: 550px;"><canvas id="revenue-profile-chart"></canvas></div>
+        </div>
+
+
+        <div class="d-flex flex-column gap-4">
+            <div class="revenue-matrix">
+                <span class="data-section-title fs-5 mb-4"><i data-lucide="layers" class="text-primary"></i> Regional Contributions</span>
+                <div class="rev-row">
+                    <span class="rev-label">Whitefield Cluster</span>
+                    <span class="rev-count">₹48,250</span>
+                </div>
+                <div class="rev-row">
+                    <span class="rev-label">Electronic City</span>
+                    <span class="rev-count">₹42,102</span>
+                </div>
+                <div class="rev-row">
+                    <span class="rev-label">Indiranagar Hub</span>
+                    <span class="rev-count">₹22,500</span>
+                </div>
+                <div class="rev-row">
+                    <span class="rev-label">HSR Layout</span>
+                    <span class="rev-count">₹18,450</span>
+                </div>
+                <div class="rev-row border-0">
+                    <span class="rev-label">Other Subdivisions</span>
+                    <span class="rev-count text-info">₹27,118</span>
+                </div>
+            </div>
+
+            <div class="metric-card border-success border-opacity-50 p-4" style="border-radius: 2.25rem;">
+                <h6 class="text-success fw-black mb-3 d-flex align-items-center gap-3 uppercase" style="font-size: 0.75rem; letter-spacing: 0.2em;">
+                    <i data-lucide="zap" size="20"></i> Peak Surcharge Note
+                </h6>
+                <p class="small text-muted m-0 italic">"Dynamic 1.25x multiplier applied between 18:00 - 22:00. Load shifting has reduced infrastructure stress while increasing peak-window gross margins by 8.4%."</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-section-header mt-5">
+        <h3 class="fw-black m-0 d-flex align-items-center gap-3">
+            <i data-lucide="terminal" class="text-primary"></i> 
+            Automated Settlement Audit Trail
+        </h3>
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 mono fw-black">SECURE_FINANCIAL_SYNC</span>
+    </div>
+    
+    <div class="audit-frame">
+        <div class="audit-log" id="settlement-ledger-window">
+
+        </div>
+    </div>
+
+</main>
+
+<footer class="mt-5 pt-5 pb-5 text-center text-muted small border-top border-secondary border-opacity-10">
+    <p>© 2026 TechAZsure Private Limited. BESCOM Regional Grid Command & Control Interface. Protocol: SECURE_ROI_v1.2</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    const ENGINE_CONFIG = {
+        JITTER_MS: 400,
+        LOG_FREQ_MS: 3000,
+        BASE_REVENUE: 158420,
+        PEAK_SURCHARGE_TOTAL: 38250,
+        LOSS_VAL: 12405
+    };
+
+    let finState = {
+        rev: ENGINE_CONFIG.BASE_REVENUE,
+        peak: ENGINE_CONFIG.PEAK_SURCHARGE_TOTAL,
+        loss: ENGINE_CONFIG.LOSS_VAL,
+        carbon: 1402
+    };
+
+    let revenueChart = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        initRevenueChart();
+        startFinancialHandshake();
+
+        setInterval(executeFinancialJitter, ENGINE_CONFIG.JITTER_MS);
+
+        setInterval(generateSettlementPulse, ENGINE_CONFIG.LOG_FREQ_MS);
+    });
+
+    function executeFinancialJitter() {
+        const jitter = (Math.random() - 0.5) * 5.0;
+        finState.rev += Math.abs(jitter);
+        finState.peak += (jitter * 0.25);
+        finState.loss += (jitter * 0.08);
+
+        document.getElementById('metric-rev').innerText = Math.floor(finState.rev).toLocaleString();
+        document.getElementById('metric-peak').innerText = Math.floor(finState.peak).toLocaleString();
+        document.getElementById('metric-leak').innerText = Math.floor(finState.loss).toLocaleString();
+        document.getElementById('metric-carbon').innerText = Math.floor(finState.carbon).toLocaleString();
+    }
+
+    function generateSettlementPulse() {
+        const events = [
+            'TX_REV_SYNC', 'TARIFF_CALIB_OK', 'SETTLEMENT_POST', 
+            'CRYPT_HASH_VERIFY', 'ROI_YIELD_CALC', 'SURCHARGE_POSTED',
+            'ISO_20022_PASS', 'NODE_CREDIT_ADJ'
+        ];
+        const evt = events[Math.floor(Math.random() * events.length)];
+        
+        const window = document.getElementById('settlement-ledger-window');
+        const row = document.createElement('div');
+        row.className = 'audit-line';
+        row.innerHTML = `
+            <span class="a-ts">${new Date().toLocaleString('en-GB')}</span>
+            <span class="a-code">${evt}</span>
+            <span class="flex-grow-1 text-muted fw-bold small">Settlement Verification: Hub Node ID Validated. ROI Post Sequence Complete.</span>
+            <span class="text-success fw-black mono small">[SETTLED]</span>
+        `;
+        window.prepend(row);
+        
+        if(window.children.length > 50) window.lastChild.remove();
+    }
+
+    function initRevenueChart() {
+        const ctx = document.getElementById('revenue-profile-chart').getContext('2d');
+        
+        const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
+        const baseRev = hours.map((_, i) => 4000 + Math.sin(i/3.8)*2500 + Math.random()*500);
+        const optimizedRev = baseRev.map((v, i) => (i >= 18 && i <= 22) ? v * 1.25 : v);
+
+        revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: hours,
+                datasets: [
+                    { 
+                        label: 'Standard Flat Revenue', 
+                        data: baseRev, 
+                        borderColor: '#94a3b8', 
+                        borderDash: [5, 5],
+                        borderWidth: 2, 
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    { 
+                        label: 'TechAZsure Optimized Settlement', 
+                        data: optimizedRev, 
+                        borderColor: '#10b981', 
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 5, 
+                        fill: true, 
+                        tension: 0.4,
+                        pointRadius: 2,
+                        pointBackgroundColor: '#10b981'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'top', labels: { color: '#94a3b8', font: { weight: '900', size: 14 } } } 
+                },
+                scales: {
+                    y: { 
+                        grid: { color: 'rgba(255,255,255,0.03)', lineWidth: 1 }, 
+                        ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', weight: '700' } } 
+                    },
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', weight: '700' } } 
+                    }
+                }
+            }
+        });
+    }
+
+    async function startFinancialHandshake() {
+        console.log("OS-HANDSHAKE-FINANCE: SECURE_ROI_READY");
+    }
+
+</script>
+</body>
+</html>

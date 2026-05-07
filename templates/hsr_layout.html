@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechAZsure | Area Command Intelligence (Industrial Grade)</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --tz-primary: #0ea5e9;
+            --tz-primary-glow: rgba(14, 165, 233, 0.4);
+            --tz-bg: #020617;
+            --tz-sidebar: #0f172a;
+            --tz-card: #1e293b;
+            --tz-border: #334155;
+            --tz-text: #f1f5f9;
+            --tz-text-muted: #94a3b8;
+            --tz-success: #10b981;
+            --tz-danger: #ef4444;
+            --tz-warning: #f59e0b;
+            --tz-info: #06b6d4;
+            
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-industrial: 0 35px 70px -15px rgba(0, 0, 0, 0.8);
+            --glass-bg: rgba(15, 23, 42, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; border: none; outline: none !important; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--tz-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--tz-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--tz-primary); }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--tz-bg);
+            color: var(--tz-text);
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .top-nav {
+            background: var(--tz-sidebar);
+            border-bottom: 1px solid var(--tz-border);
+            padding: 1.25rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-zone { display: flex; align-items: center; gap: 15px; text-decoration: none; }
+        .logo-frame {
+            width: 44px; height: 42px;
+            background: linear-gradient(135deg, var(--tz-primary), var(--tz-info));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px var(--tz-primary-glow);
+        }
+
+        .area-hero {
+            padding: 5rem 4rem; 
+            background: linear-gradient(145deg, #1e293b 0%, #020617 100%);
+            border-bottom: 2px solid var(--tz-border);
+            position: relative; overflow: hidden;
+        }
+        .hero-bg-fx { 
+            position: absolute; top: -20%; right: -10%; width: 60%; height: 140%; 
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%); 
+            filter: blur(60px); pointer-events: none; 
+        }
+
+        .status-badge-live {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--tz-success);
+            border: 1px solid var(--tz-success);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .live-dot { width: 6px; height: 6px; background: var(--tz-success); border-radius: 50%; box-shadow: 0 0 8px var(--tz-success); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: -3.5rem; padding: 0 4rem; position: relative; z-index: 100; }
+        .metric-card {
+            background: var(--glass-bg); backdrop-filter: blur(30px);
+            border: 1.5px solid var(--glass-border); border-radius: 2.5rem;
+            padding: 2.5rem; transition: var(--transition-smooth);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .metric-card:hover { transform: translateY(-10px); border-color: var(--tz-primary); box-shadow: var(--shadow-industrial); }
+
+        .m-tag { font-size: 0.75rem; font-weight: 800; color: var(--tz-text-muted); text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 1.25rem; }
+        .m-val { font-size: 2.75rem; font-weight: 900; color: white; line-height: 1; letter-spacing: -0.04em; }
+        .m-unit { font-size: 1rem; color: var(--tz-text-muted); font-weight: 700; margin-left: 8px; }
+        .m-trend { font-size: 0.85rem; margin-top: 1.25rem; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+
+        .main-container { padding: 4rem; }
+        .data-section-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 15px; }
+
+        .analytics-block { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 3.5rem; }
+        .chart-card { background: var(--tz-card); border: 1px solid var(--tz-border); border-radius: 2.5rem; padding: 3rem; }
+
+        .fleet-matrix { background: rgba(255,255,255,0.02); border: 1px solid var(--tz-border); border-radius: 2.5rem; padding: 2.5rem; }
+        .fleet-row { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .fleet-row:last-child { border-bottom: none; }
+        .fleet-icon-box { width: 40px; height: 40px; border-radius: 10px; background: rgba(14, 165, 233, 0.1); display: flex; align-items: center; justify-content: center; color: var(--tz-primary); }
+        .fleet-label { font-weight: 700; font-size: 0.95rem; }
+        .fleet-count { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--tz-success); font-size: 1.1rem; }
+
+        .planning-alert {
+            background: linear-gradient(145deg, rgba(245, 158, 11, 0.05), transparent);
+            border: 2px dashed rgba(245, 158, 11, 0.3); border-radius: 2.5rem; padding: 3rem;
+            color: var(--tz-warning); position: relative; overflow: hidden;
+        }
+        .planning-badge { background: var(--tz-warning); color: #000; font-size: 0.65rem; font-weight: 900; padding: 4px 12px; border-radius: 5px; margin-bottom: 1.5rem; display: inline-block; letter-spacing: 0.1em; }
+        .planning-val { font-size: 3.5rem; font-weight: 900; color: white; display: block; margin: 1rem 0; }
+
+        .audit-frame { background: #020617; border: 1.5px solid var(--tz-border); border-radius: 2.5rem; padding: 3rem; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
+        .audit-log { max-height: 500px; overflow-y: auto; padding-right: 1.5rem; scrollbar-width: thin; }
+        .audit-line { display: flex; align-items: center; gap: 30px; padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .a-ts { color: var(--tz-text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; min-width: 200px; }
+        .a-code { background: rgba(14, 165, 233, 0.1); color: var(--tz-primary); padding: 5px 14px; border-radius: 6px; font-weight: 900; font-size: 0.7rem; border: 1px solid var(--tz-primary); min-width: 150px; text-align: center; }
+
+        .health-dial {
+            width: 140px; height: 140px; border-radius: 50%; border: 8px solid #0f172a;
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            position: relative;
+        }
+        .health-dial::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 4px solid var(--tz-success); border-top-color: transparent; animation: spin 5s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .fw-black { font-weight: 900; }
+        .text-glow { text-shadow: 0 0 20px var(--tz-primary-glow); }
+        .btn-action { background: var(--tz-primary); color: white; padding: 0.75rem 2rem; border-radius: 1rem; font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em; transition: var(--transition-smooth); }
+        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 10px 20px var(--tz-primary-glow); color: white; }
+
+        @media (max-width: 1400px) {
+            .metric-grid { grid-template-columns: repeat(2, 1fr); }
+            .analytics-block { grid-template-columns: 1fr; }
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="d-flex align-items-center gap-5">
+        <a href="index.html" class="brand-zone">
+            <div class="logo-frame"><i data-lucide="zap" color="white" size="24"></i></div>
+            <div>
+                <h4 class="m-0 fw-black">GridSense</h4>
+                <span class="text-primary small fw-black tracking-widest" style="font-size: 0.6rem;">GOVERNMENT HUB</span>
+            </div>
+        </a>
+        <div class="d-none d-lg-flex gap-4">
+            <a href="#" class="text-muted text-decoration-none small fw-bold">DASHBOARD</a>
+            <a href="#" class="text-muted text-decoration-none small fw-bold">ANALYTICS</a>
+            <a href="#" class="text-muted text-decoration-none small fw-bold">PLANNING</a>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-4">
+        <div class="status-badge-live">
+            <div class="live-dot"></div>
+            <span>SECURE HANDSHAKE ACTIVE</span>
+        </div>
+        <button class="btn-action" onclick="window.print()">GENERATE AUDIT PDF</button>
+    </div>
+</nav>
+
+<section class="area-hero">
+    <div class="hero-bg-fx"></div>
+    <div class="row align-items-center position-relative">
+        <div class="col-lg-8">
+            <div class="badge bg-danger bg-opacity-10 text-danger fw-black px-3 py-2 mb-4" style="font-size: 11px; letter-spacing: 0.2em;">INDUSTRIAL GRADE DEEP-DIVE</div>
+            <h1 class="display-1 fw-black text-white m-0" id="area-title">HSR LAYOUT</h1>
+            <p class="text-muted display-6 mt-3 fw-bold">Subdivision Performance & Infrastructure Roadmap</p>
+            
+            <div class="d-flex gap-5 mt-5">
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Registry Node</span>
+                    <span class="text-cyan fw-bold fs-4">BESCOM-NODE-HSR-01</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Last Handshake</span>
+                    <span class="text-emerald fw-bold fs-4" id="last-handshake">17:28:45</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Encryption Status</span>
+                    <span class="text-primary fw-bold fs-4">AES-256 SECURE</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 text-end">
+            <div class="glass-card d-inline-block text-start p-5" style="min-width: 380px;">
+                <span class="m-tag mb-4">Grid Health Score (GHI)</span>
+                <div class="d-flex align-items-center gap-5">
+                    <div class="health-dial">
+                        <div class="stat-value text-emerald display-4 fw-black" id="ghi-val">94%</div>
+                        <span class="x-small text-muted fw-bold">NOMINAL</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="progress-bar-industrial mb-3" style="height: 12px; background: #020617; border-radius: 20px; overflow: hidden;">
+                            <div class="progress-fill" id="ghi-progress" style="width: 94%; height:100%; background: var(--tz-success);"></div>
+                        </div>
+                        <span class="x-small text-muted mono fw-black">RELIABILITY INDEX: STABLE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="metric-grid">
+    <div class="metric-card">
+        <span class="m-tag">Total Feed Supply</span>
+        <div class="m-val"><span id="metric-supply">562.4</span><span class="m-unit">kWh</span></div>
+        <div class="m-trend text-success"><i data-lucide="activity" size="16"></i> High Frequency Feed</div>
+    </div>
+    <div class="metric-card">
+        <span class="m-tag">Active Consumption</span>
+        <div class="m-val text-glow"><span id="metric-cons">521.8</span><span class="m-unit">kWh</span></div>
+        <div class="m-trend text-info"><i data-lucide="users" size="16"></i> 1,204 Active Sessions</div>
+    </div>
+    <div class="metric-card border-danger border-opacity-30">
+        <span class="m-tag text-danger">T&C Energy Loss</span>
+        <div class="m-val text-danger"><span id="metric-loss">40.6</span><span class="m-unit">kWh</span></div>
+        <div class="m-trend text-danger fw-black" id="metric-leakage">₹345.10 REVENUE LEAKAGE</div>
+    </div>
+    <div class="metric-card border-emerald border-opacity-30">
+        <span class="m-tag text-emerald">Dynamic ROI</span>
+        <div class="m-val text-emerald"><span id="metric-rev">₹4,432</span></div>
+        <div class="m-trend text-emerald fw-bold"><i data-lucide="trending-up" size="16"></i> Peak Optimization Yield</div>
+    </div>
+</section>
+
+<main class="main-container">
+    
+    <div class="analytics-block">
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h4 class="fw-black m-0 fs-3">Subdivision Load Profiling</h4>
+                    <span class="text-muted small fw-bold tracking-widest">ACTUAL CONSUMPTION VS ORCHESTRATION TARGET</span>
+                </div>
+                <div class="d-flex gap-3">
+                    <div class="badge bg-primary px-3 py-2 fs-6">24 HOUR WINDOW</div>
+                    <div class="badge bg-danger px-3 py-2 fs-6 d-flex align-items-center gap-2">
+                        <div style="width:8px; height:8px; background:white; border-radius:50%; animation: pulse 1s infinite;"></div>
+                        REAL-TIME
+                    </div>
+                </div>
+            </div>
+            <div style="height: 500px;"><canvas id="area-profile-chart"></canvas></div>
+        </div>
+
+        <div class="d-flex flex-column gap-4">
+            <div class="fleet-matrix">
+                <span class="data-module-title"><i data-lucide="truck"></i> Subdivision Fleet Mix</span>
+                <div class="fleet-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fleet-icon-box"><i data-lucide="bike"></i></div>
+                        <span class="fleet-label">2-Wheelers</span>
+                    </div>
+                    <span class="fleet-count">42.5%</span>
+                </div>
+                <div class="fleet-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fleet-icon-box"><i data-lucide="component"></i></div>
+                        <span class="fleet-label">3-Wheelers</span>
+                    </div>
+                    <span class="fleet-count">18.2%</span>
+                </div>
+                <div class="fleet-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fleet-icon-box"><i data-lucide="car"></i></div>
+                        <span class="fleet-label">4-Wheelers</span>
+                    </div>
+                    <span class="fleet-count">35.4%</span>
+                </div>
+                <div class="fleet-row border-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fleet-icon-box" style="background: rgba(16, 185, 129, 0.1); color: var(--tz-success);"><i data-lucide="bus"></i></div>
+                        <span class="fleet-label">Heavy Comm.</span>
+                    </div>
+                    <span class="fleet-count text-success">3.9%</span>
+                </div>
+            </div>
+
+            <div class="glass-card border-danger border-opacity-40 p-4">
+                <h6 class="text-danger fw-black mb-3 d-flex align-items-center gap-3">
+                    <i data-lucide="zap-off" size="20"></i> Peak Stress Hour
+                </h6>
+                <div class="d-flex align-items-end justify-content-between">
+                    <h1 class="display-4 fw-black m-0 text-white" id="peak-hour">19:00</h1>
+                    <div class="text-end">
+                        <span class="d-block x-small text-muted mono fw-bold">MAX LOAD</span>
+                        <span class="fw-black text-danger fs-4" id="peak-val">48.2 kWh</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card border-emerald border-opacity-40 p-4">
+                <h6 class="text-success fw-black mb-3 d-flex align-items-center gap-3">
+                    <i data-lucide="battery-charging" size="20"></i> Optimal Window
+                </h6>
+                <div class="d-flex align-items-end justify-content-between">
+                    <h1 class="display-4 fw-black m-0 text-white" id="low-hour">03:00</h1>
+                    <div class="text-end">
+                        <span class="d-block x-small text-muted mono fw-bold">MIN LOAD</span>
+                        <span class="fw-black text-success fs-4" id="low-val">12.1 kWh</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6">
+            <div class="planning-alert">
+                <span class="planning-badge">PART B: RESOURCE OPTIMIZATION ADVISORY</span>
+                <h3 class="fw-black text-white mb-4"><i data-lucide="map-pin" class="me-3 text-warning" size="28"></i>Expansion Roadmap</h3>
+                
+                <div class="row mt-5">
+                    <div class="col-6 border-end border-white border-opacity-10">
+                        <span class="d-block x-small text-muted fw-black mb-2 tracking-widest">EXISTING HUB DENSITY</span>
+                        <div class="display-5 fw-black text-white"><span id="count-installed">6</span> EV BOOTHS</div>
+                    </div>
+                    <div class="col-6 ps-5">
+                        <span class="d-block x-small text-muted fw-black mb-2 tracking-widest">AI RECOMMENDATION</span>
+                        <div class="display-5 fw-black text-warning"><span id="count-proposed">+2</span> NEW HUBS</div>
+                    </div>
+                </div>
+                
+                <div class="glass-card bg-dark bg-opacity-60 p-4 border-warning border-opacity-20 mt-5" style="border-radius: 1.75rem;">
+                    <p class="small text-muted m-0 leading-relaxed fw-medium">
+                        Analytical Report: Node HSR-01 is currently operating at 95.2% thermal limit during peak evening windows (19:00 - 21:00). 
+                        TechAZsure Nora AGI suggests the commissioning of <span class="text-warning">two additional L3 DC Fast Chargers</span> at Sector 4 to prevent transformer age-acceleration.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+
+            <div class="report-section h-100 glass-card">
+                <h4 class="fw-black mb-4">Grid Integrity Scorecard</h4>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small fw-bold">Voltage Stability</span>
+                        <span class="small text-success">98.5%</span>
+                    </div>
+                    <div class="progress-bar-industrial" style="height: 6px;">
+                        <div class="progress-bar-fill" style="width: 98%;"></div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small fw-bold">Thermal Headroom</span>
+                        <span class="small text-warning">12.4%</span>
+                    </div>
+                    <div class="progress-bar-industrial" style="height: 6px;">
+                        <div class="progress-bar-fill bg-warning" style="width: 12%;"></div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small fw-bold">Phase Load Balancing</span>
+                        <span class="small text-success">Balanced</span>
+                    </div>
+                    <div class="progress-bar-industrial" style="height: 6px;">
+                        <div class="progress-bar-fill bg-emerald" style="width: 90%;"></div>
+                    </div>
+                </div>
+                <hr class="border-secondary border-opacity-20 my-5">
+                <div class="p-3 bg-dark bg-opacity-50 rounded border-start border-primary">
+                    <h6 class="fw-bold mb-2">Asset Lifecycle Projection</h6>
+                    <p class="x-small text-muted mb-0">Predicted Maintenance: Thermal Oil replacement due in 42 days. Scheduling autonomous inspection...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-section-title">
+        <i data-lucide="file-key" class="text-primary"></i> 
+        Industrial Transaction Audit Trail (IEC 61850)
+    </div>
+    <div class="audit-frame">
+        <div class="audit-log" id="ledger-window">
+        </div>
+    </div>
+
+</main>
+
+<footer class="mt-5 pt-5 pb-5 text-center text-muted small border-top border-secondary border-opacity-10">
+    <p>© 2026 TechAZsure Private Limited. BESCOM Regional Grid Command & Control Interface. Protocol: SECURE_OS_V7.6</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    const CONFIG = {
+        POLL_RATE: 500,
+        API_POLL_RATE: 3000,
+        BASE_TARIFF: 8.5,
+        PEAK_MULTIPLIER: 1.25
+    };
+
+    let state = {
+        energy: 521.8,
+        revenue: 4432.0,
+        supply: 562.4,
+        history: []
+    };
+
+    let areaChart = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        initAreaChart();
+        startDataHandshake();
+
+        setInterval(simulateSensorJitter, CONFIG.POLL_RATE);
+    });
+
+    function simulateSensorJitter() {
+        const jitter = (Math.random() - 0.5) * 0.15;
+        state.energy = Math.max(0, state.energy + jitter);
+        state.revenue = state.energy * CONFIG.BASE_TARIFF * 0.95; // Rough sim
+        state.supply = state.energy * 1.08;
+
+        document.getElementById('metric-cons').innerText = state.energy.toFixed(2);
+        document.getElementById('metric-rev').innerText = '₹' + Math.floor(state.revenue).toLocaleString();
+        document.getElementById('metric-supply').innerText = state.supply.toFixed(2);
+        document.getElementById('metric-loss').innerText = (state.supply - state.energy).toFixed(2);
+        document.getElementById('metric-leakage').innerText = '₹' + ((state.supply - state.energy) * CONFIG.BASE_TARIFF).toFixed(2) + ' REVENUE LEAKAGE';
+        
+        document.getElementById('last-handshake').innerText = new Date().toLocaleTimeString();
+    }
+
+    function injectAuditLog(event, status = 'SUCCESS') {
+        const ledger = document.getElementById('ledger-window');
+        const row = document.createElement('div');
+        row.className = 'audit-line';
+        row.innerHTML = `
+            <span class="a-ts">${new Date().toLocaleString('en-GB')}</span>
+            <span class="a-code">${event}</span>
+            <span class="flex-grow-1 text-muted fw-bold">Grid Telemetry Verification: [NODE-HSR-01] Parameter Nominal.</span>
+            <span class="text-success fw-black mono small">[ENCRYPTED]</span>
+        `;
+        ledger.prepend(row);
+        if(ledger.children.length > 50) ledger.lastChild.remove();
+    }
+
+    function initAreaChart() {
+        const ctx = document.getElementById('area-profile-chart').getContext('2d');
+        const labels = Array.from({length: 24}, (_, i) => `${i}:00`);
+        const data = Array.from({length: 24}, (_, i) => 20 + Math.sin(i/3.5)*15 + Math.random()*5);
+        const target = data.map(v => v * 0.85);
+
+        areaChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Actual Grid Demand (kWh)', data: data, backgroundColor: 'rgba(14, 165, 233, 0.45)', borderRadius: 10, borderSkipped: false },
+                    { label: 'Efficiency Target Profile', data: target, type: 'line', borderColor: '#10b981', borderWidth: 4, pointRadius: 3, fill: false, tension: 0.3 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8', font: { weight: '800', size: 13 } } } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono' } } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono' } } }
+                }
+            }
+        });
+    }
+
+    async function startDataHandshake() {
+        const events = ['PHASE_SYNC', 'VOLTAGE_CHECK', 'TARIFF_UPDATE', 'ENCRYPTION_PASS', 'THERMAL_LOAD_OK'];
+        setInterval(() => {
+            const evt = events[Math.floor(Math.random() * events.length)];
+            injectAuditLog(evt);
+        }, 5000);
+    }
+
+</script>
+</body>
+</html>

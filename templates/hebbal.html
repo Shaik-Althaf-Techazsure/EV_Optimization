@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechAZsure | Hebbal Command Intelligence (Industrial Grade)</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --tz-primary: #0ea5e9;
+            --tz-primary-glow: rgba(14, 165, 233, 0.4);
+            --tz-bg: #020617;
+            --tz-sidebar: #0f172a;
+            --tz-card: #1e293b;
+            --tz-border: #334155;
+            --tz-text: #f1f5f9;
+            --tz-text-muted: #94a3b8;
+            --tz-success: #10b981;
+            --tz-danger: #ef4444;
+            --tz-warning: #f59e0b;
+            --tz-info: #06b6d4;
+            
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-industrial: 0 40px 80px -20px rgba(0, 0, 0, 0.9);
+            --glass-bg: rgba(15, 23, 42, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; border: none; outline: none !important; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--tz-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--tz-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--tz-primary); }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--tz-bg);
+            color: var(--tz-text);
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .top-nav {
+            background: var(--tz-sidebar);
+            border-bottom: 1px solid var(--tz-border);
+            padding: 1.25rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 3000;
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-zone { display: flex; align-items: center; gap: 15px; text-decoration: none; }
+        .logo-frame {
+            width: 44px; height: 42px;
+            background: linear-gradient(135deg, var(--tz-primary), var(--tz-info));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 25px var(--tz-primary-glow);
+        }
+
+        .area-hero {
+            padding: 6rem 4rem; 
+            background: linear-gradient(145deg, #0f172a 0%, #020617 100%);
+            border-bottom: 2px solid var(--tz-border);
+            position: relative; overflow: hidden;
+        }
+        .hero-bg-fx { 
+            position: absolute; top: -30%; right: -5%; width: 55%; height: 160%; 
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.12) 0%, transparent 75%); 
+            filter: blur(80px); pointer-events: none; 
+        }
+
+        .status-badge-live {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--tz-danger);
+            border: 1px solid var(--tz-danger);
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .live-dot-alert { width: 8px; height: 8px; background: var(--tz-danger); border-radius: 50%; box-shadow: 0 0 12px var(--tz-danger); animation: pulse-red 1.5s infinite; }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; margin-top: -4.5rem; padding: 0 4rem; position: relative; z-index: 100; }
+        .metric-card {
+            background: var(--glass-bg); backdrop-filter: blur(40px);
+            border: 1.5px solid var(--glass-border); border-radius: 2.75rem;
+            padding: 3rem; transition: var(--transition-smooth);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .metric-card:hover { transform: translateY(-12px); border-color: var(--tz-primary); box-shadow: var(--shadow-industrial); }
+
+        .m-tag { font-size: 0.7rem; font-weight: 900; color: var(--tz-text-muted); text-transform: uppercase; letter-spacing: 0.2em; display: block; margin-bottom: 1.5rem; }
+        .m-val { font-size: 3.25rem; font-weight: 900; color: white; line-height: 1; letter-spacing: -0.05em; display: flex; align-items: baseline; }
+        .m-unit { font-size: 1.15rem; color: var(--tz-text-muted); font-weight: 700; margin-left: 10px; }
+        .m-trend { font-size: 0.9rem; margin-top: 1.5rem; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+
+        .main-container { padding: 5rem 4rem; }
+        .data-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
+        .data-section-title { font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; gap: 20px; }
+
+        .analytics-block { display: grid; grid-template-columns: 2.2fr 1fr; gap: 2.5rem; margin-bottom: 4rem; }
+        .chart-card { background: var(--tz-card); border: 1.5px solid var(--tz-border); border-radius: 3rem; padding: 3.5rem; position: relative; }
+        .chart-card::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.03), transparent 70%); pointer-events: none; }
+
+        .fleet-matrix { background: rgba(255,255,255,0.02); border: 1.5px solid var(--tz-border); border-radius: 3rem; padding: 3rem; }
+        .fleet-row { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .fleet-row:last-child { border-bottom: none; }
+        .fleet-icon-box { width: 48px; height: 48px; border-radius: 12px; background: rgba(14, 165, 233, 0.12); display: flex; align-items: center; justify-content: center; color: var(--tz-primary); }
+        .fleet-label { font-weight: 700; font-size: 1rem; }
+        .fleet-count { font-family: 'JetBrains Mono', monospace; font-weight: 900; color: var(--tz-primary); font-size: 1.3rem; }
+
+        .planning-alert {
+            background: linear-gradient(145deg, rgba(239, 68, 68, 0.05), #1e293b);
+            border: 3px dashed rgba(239, 68, 68, 0.4); border-radius: 3.5rem; padding: 4rem;
+            color: var(--tz-danger); position: relative; overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        }
+        .planning-badge { background: var(--tz-danger); color: white; font-size: 0.7rem; font-weight: 900; padding: 6px 20px; border-radius: 8px; margin-bottom: 2rem; display: inline-block; letter-spacing: 0.15em; }
+        .planning-val { font-size: 4.5rem; font-weight: 900; color: white; display: block; margin: 1.5rem 0; line-height: 0.9; letter-spacing: -0.05em; }
+
+        .audit-frame { background: #01040a; border: 2px solid var(--tz-border); border-radius: 3rem; padding: 4rem; box-shadow: inset 0 0 80px rgba(0,0,0,0.8); }
+        .audit-log { max-height: 600px; overflow-y: auto; padding-right: 2rem; scrollbar-width: thin; }
+        .audit-line { display: flex; align-items: center; gap: 40px; padding: 1.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); transition: var(--transition-smooth); }
+        .audit-line:hover { background: rgba(14, 165, 233, 0.02); padding-left: 1rem; }
+        .a-ts { color: var(--tz-text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-width: 240px; }
+        .a-code { background: rgba(239, 68, 68, 0.12); color: var(--tz-danger); padding: 8px 18px; border-radius: 10px; font-weight: 900; font-size: 0.75rem; border: 1.5px solid var(--tz-danger); min-width: 180px; text-align: center; letter-spacing: 0.05em; }
+
+        .health-dial-hub {
+            width: 180px; height: 180px; border-radius: 50%; border: 12px solid #0f172a;
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        .health-dial-hub::after { content: ''; position: absolute; inset: -15px; border-radius: 50%; border: 6px solid var(--tz-danger); border-top-color: transparent; animation: spin 2.5s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .fw-black { font-weight: 900; }
+        .text-glow { text-shadow: 0 0 30px var(--tz-primary-glow); }
+        .btn-action-industrial { background: var(--tz-primary); color: white; padding: 1rem 3rem; border-radius: 1.5rem; font-weight: 900; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.2em; transition: var(--transition-smooth); box-shadow: 0 15px 30px var(--tz-primary-glow); }
+        .btn-action-industrial:hover { transform: translateY(-5px); background: white; color: var(--tz-primary); box-shadow: 0 20px 40px rgba(255,255,255,0.2); }
+
+        .progress-bar-industrial { height: 16px; background: #020617; border-radius: 30px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+        .progress-fill-active { height: 100%; background: linear-gradient(90deg, var(--tz-danger), var(--tz-warning)); width: 42%; transition: width 2s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        @media (max-width: 1600px) {
+            .metric-grid { grid-template-columns: repeat(2, 1fr); padding: 0 2rem; }
+            .main-container { padding: 4rem 2rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="d-flex align-items-center gap-5">
+        <a href="index.html" class="brand-zone">
+            <div class="logo-frame"><i data-lucide="zap" color="white" size="28"></i></div>
+            <div>
+                <h4 class="m-0 fw-black text-white">GridSense</h4>
+                <span class="text-primary small fw-black tracking-widest" style="font-size: 0.65rem;">GOVT. COMMAND CENTER</span>
+            </div>
+        </a>
+        <div class="d-none d-xl-flex gap-5">
+            <a href="index.html" class="text-muted text-decoration-none small fw-black tracking-widest">CLUSTER OVERVIEW</a>
+            <a href="#" class="text-white text-decoration-none small fw-black tracking-widest border-bottom border-primary pb-1">AREA ANALYTICS</a>
+            <a href="#" class="text-muted text-decoration-none small fw-black tracking-widest">PLANNING STRATEGY</a>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-5">
+        <div class="status-badge-live" style="border-color: var(--tz-danger); color: var(--tz-danger); background: rgba(239, 68, 68, 0.1);">
+            <div class="live-dot-alert"></div>
+            <span class="mono">NODE_HANDSHAKE: THERMAL_CRITICAL</span>
+        </div>
+        <button class="btn-action-industrial" onclick="window.print()">AUDIT EXPORT</button>
+    </div>
+</nav>
+
+<section class="area-hero">
+    <div class="hero-bg-fx"></div>
+    <div class="row align-items-center position-relative">
+        <div class="col-lg-8">
+            <div class="badge bg-danger bg-opacity-10 text-danger fw-black px-4 py-2 mb-4" style="font-size: 12px; letter-spacing: 0.25em; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3);">HIGH INTENSITY TRANSPORT HUB</div>
+            <h1 class="display-1 fw-black text-white m-0" style="letter-spacing: -0.04em;">HEBBAL</h1>
+            <p class="text-muted display-6 mt-3 fw-bold">Distribution Transformer Cluster: HEB-HUB-02C (Gateway-Node)</p>
+            
+            <div class="d-flex gap-5 mt-5 pt-4">
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Hub Registry</span>
+                    <span class="text-cyan fw-bold fs-3">BESCOM-HEB-400KW</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Thermal Headroom</span>
+                    <span class="text-danger fw-bold fs-3">2.4% (CRITICAL)</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Asset Lifecycle</span>
+                    <span class="text-primary fw-bold fs-3">MTBF: 12.4k Hrs</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 text-end">
+            <div class="glass-card d-inline-block text-start p-5" style="min-width: 420px; border-radius: 3.5rem;">
+                <span class="m-tag mb-4">Grid Health Index (GHI)</span>
+                <div class="d-flex align-items-center gap-5">
+                    <div class="health-dial-hub" style="border-color: var(--tz-danger);">
+                        <div class="stat-value text-danger display-3 fw-black" id="ghi-val">42%</div>
+                        <span class="x-small text-muted fw-bold">CRITICAL</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="progress-bar-industrial mb-3">
+                            <div class="progress-fill-active" id="ghi-progress" style="width: 42%; background: var(--tz-danger);"></div>
+                        </div>
+                        <span class="x-small text-muted mono fw-black">RELIABILITY INDEX: OVERLOAD RISK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="metric-grid">
+    <div class="metric-card">
+        <span class="m-tag">Hub Feed Supply</span>
+        <div class="m-val"><span id="metric-supply">412.5</span><span class="m-unit">kWh</span></div>
+        <div class="m-trend text-danger"><i data-lucide="zap" size="18"></i> Capacity Saturation</div>
+    </div>
+    <div class="metric-card">
+        <span class="m-tag">Active Commuter Load</span>
+        <div class="m-val text-glow"><span id="metric-cons">388.4</span><span class="m-unit">kWh</span></div>
+        <div class="m-trend text-info"><i data-lucide="activity" size="18"></i> 942 Transit Sessions</div>
+    </div>
+    <div class="metric-card border-danger border-opacity-40">
+        <span class="m-tag text-danger">Distribution Losses</span>
+        <div class="m-val text-danger"><span id="metric-loss">24.1</span><span class="m-unit">kWh</span></div>
+        <div class="m-trend text-danger fw-black" id="metric-leakage">₹204.85 REVENUE LOSS</div>
+    </div>
+    <div class="metric-card border-emerald border-opacity-40">
+        <span class="m-tag text-emerald">Dynamic Settlement</span>
+        <div class="m-val text-emerald">₹<span id="metric-rev">3,301</span></div>
+        <div class="m-trend text-emerald fw-bold"><i data-lucide="trending-up" size="18"></i> Peak Surcharge Active</div>
+    </div>
+</section>
+
+<main class="main-container">
+    
+    <div class="data-section-header">
+        <h2 class="data-section-title"><i data-lucide="radio" class="text-primary"></i> Gateway Temporal Profiling</h2>
+        <div class="badge bg-dark border border-secondary px-4 py-2 mono fw-black text-muted">JUNCTION_NODE: BENGALURU-NORTH</div>
+    </div>
+
+    <div class="analytics-block">
+
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h4 class="fw-black m-0 fs-3">Transport Hub Demand Curve</h4>
+                    <span class="text-muted small fw-bold tracking-widest uppercase">Actual Supply vs Node Threshold</span>
+                </div>
+                <div class="d-flex gap-3">
+                    <div class="badge bg-danger px-3 py-2 fs-6">SATURATION RISK</div>
+                    <div class="badge bg-danger px-3 py-2 fs-6 d-flex align-items-center gap-2">
+                        <div class="live-dot" style="background:white;"></div>
+                        IOT FEED
+                    </div>
+                </div>
+            </div>
+            <div style="height: 550px;"><canvas id="hebbal-profile-chart"></canvas></div>
+        </div>
+
+        <div class="d-flex flex-column gap-4">
+            <div class="fleet-matrix">
+                <span class="data-module-title"><i data-lucide="truck"></i> Transit Fleet Mix</span>
+                <div class="fleet-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fleet-icon-box"><i data-lucide="bike"></i></div>
+                        <span class="fleet-label">2-Wheelers (Transit)</span>
+                    </div>
+                    <span class="fleet-count">52.1%</span>
+                </div>
+                <div class="fleet-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fleet-icon-box" style="color: var(--tz-warning); background: rgba(245, 158, 11, 0.1);"><i data-lucide="box"></i></div>
+                        <span class="fleet-label">3-Wheelers (Cargo)</span>
+                    </div>
+                    <span class="fleet-count text-warning">24.8%</span>
+                </div>
+                <div class="fleet-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fleet-icon-box"><i data-lucide="car"></i></div>
+                        <span class="fleet-label">4-Wheelers (Shared)</span>
+                    </div>
+                    <span class="fleet-count">18.2%</span>
+                </div>
+                <div class="fleet-row border-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fleet-icon-box" style="background: rgba(16, 185, 129, 0.15); color: var(--tz-success);"><i data-lucide="bus"></i></div>
+                        <span class="fleet-label">Electric BMTC/Intercity</span>
+                    </div>
+                    <span class="fleet-count text-success">4.9%</span>
+                </div>
+            </div>
+
+            <div class="metric-card border-danger border-opacity-50 p-4" style="border-radius: 2.25rem;">
+                <h6 class="text-danger fw-black mb-3 d-flex align-items-center gap-3 uppercase" style="font-size: 0.75rem; letter-spacing: 0.2em;">
+                    <i data-lucide="alert-octagon" size="20"></i> Thermal Violation Window
+                </h6>
+                <div class="d-flex align-items-end justify-content-between">
+                    <h1 class="display-3 fw-black m-0 text-white mono" id="peak-hour">19:15</h1>
+                    <div class="text-end">
+                        <span class="d-block x-small text-muted mono fw-bold">NODE LIMIT</span>
+                        <span class="fw-black text-danger fs-3" id="peak-val">388.4 kWh</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card border-emerald border-opacity-50 p-4" style="border-radius: 2.25rem;">
+                <h6 class="text-success fw-black mb-3 d-flex align-items-center gap-3 uppercase" style="font-size: 0.75rem; letter-spacing: 0.2em;">
+                    <i data-lucide="zap-off" size="20"></i> Off-Peak Trough
+                </h6>
+                <div class="d-flex align-items-end justify-content-between">
+                    <h1 class="display-3 fw-black m-0 text-white mono" id="low-hour">04:30</h1>
+                    <div class="text-end">
+                        <span class="d-block x-small text-muted mono fw-bold">BASE FEED</span>
+                        <span class="fw-black text-success fs-3" id="low-val">42.8 kWh</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5 mb-5">
+        <div class="col-lg-7">
+            <div class="planning-alert">
+                <span class="planning-badge">PART B: CRITICAL CAPACITY UPGRADE</span>
+                <h2 class="fw-black text-white mb-5"><i data-lucide="shield-alert" class="me-4 text-danger" size="36"></i>Junction Expansion Roadmap</h2>
+                
+                <div class="row mt-5">
+                    <div class="col-6 border-end border-white border-opacity-10">
+                        <span class="d-block x-small text-muted fw-black mb-3 tracking-widest uppercase">Current Node Density</span>
+                        <div class="display-4 fw-black text-white"><span id="count-installed">4</span> EV BOOTHS</div>
+                    </div>
+                    <div class="col-6 ps-5">
+                        <span class="d-block x-small text-muted fw-black mb-3 tracking-widest uppercase">Required (Emergency)</span>
+                        <div class="display-4 fw-black text-danger"><span id="count-proposed">+4</span> L3 HUBS</div>
+                    </div>
+                </div>
+                
+                <div class="glass-card bg-dark bg-opacity-70 p-4 border-danger border-opacity-20 mt-5" style="border-radius: 2rem;">
+                    <p class="fs-6 text-muted m-0 leading-relaxed fw-medium">
+                        Emergency Briefing: Hebbal Node 02C is operating at <span class="text-danger">97.4% thermal capacity</span>. 
+                        Nora AGI Core identifies a high risk of insulation breakdown. Strategic commissioning of <span class="text-danger">four additional 100kW DC Charging Hubs</span> 
+                        along the Airport Flyover ramp is mandatory to divert transient EV traffic and preserve core transformer assets.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+
+            <div class="chart-card h-100">
+                <h4 class="fw-black mb-5">Grid Stress Audit</h4>
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="small fw-black text-muted uppercase tracking-widest">Transformer Saturation</span>
+                        <span class="small text-danger fw-bold">97.1% - CRITICAL</span>
+                    </div>
+                    <div class="progress-bar-industrial" style="height: 8px;">
+                        <div class="progress-fill-active" style="width: 97%; background: var(--tz-danger);"></div>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="small fw-black text-muted uppercase tracking-widest">Voltage Sag Index</span>
+                        <span class="small text-warning fw-bold">8.2% - ALERT</span>
+                    </div>
+                    <div class="progress-bar-industrial" style="height: 8px;">
+                        <div class="progress-fill-active" style="width: 82%; background: var(--tz-warning);"></div>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="small fw-black text-muted uppercase tracking-widest">Phase Unbalance (Neutral)</span>
+                        <span class="small text-warning fw-bold">5.8% - HIGH</span>
+                    </div>
+                    <div class="progress-bar-industrial" style="height: 8px;">
+                        <div class="progress-fill-active" style="width: 58%; background: var(--tz-primary);"></div>
+                    </div>
+                </div>
+                <hr class="border-secondary border-opacity-10 my-5">
+                <div class="p-4 bg-dark bg-opacity-40 rounded border-start border-4 border-danger" style="border-radius: 1rem !important;">
+                    <h6 class="fw-black mb-2 text-white small uppercase tracking-widest">Critical Alert Protocol</h6>
+                    <p class="x-small text-muted mb-0 fw-bold mono">Autonomous Load Shedding: Initiating 15% reduction in public L2 charger current to maintain flyover substation stability. Emergency physical inspection triggered.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-section-header mt-5">
+        <h3 class="fw-black m-0 d-flex align-items-center gap-3">
+            <i data-lucide="terminal" class="text-primary"></i> 
+            SCADA Transaction Audit Ledger
+        </h3>
+        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-3 py-2 mono fw-black">IEC_61850_TELEMETRY_ALERT</span>
+    </div>
+    
+    <div class="audit-frame">
+        <div class="audit-log" id="hebbal-ledger-window">
+        </div>
+    </div>
+
+
+<footer class="mt-5 pt-5 pb-5 text-center text-muted small border-top border-secondary border-opacity-10">
+    <div class="mb-3">
+        <span class="px-3 border-end border-secondary border-opacity-20 fw-bold">VERSION: 7.6.0-PRO</span>
+        <span class="px-3 border-end border-secondary border-opacity-20 fw-bold">REGION: BENGALURU-NORTH</span>
+        <span class="px-3 fw-bold">PROTOCOL: SECURE_OS_HEB</span>
+    </div>
+    <p>© 2026 TechAZsure Private Limited. BESCOM Industrial Grid Command & Control Interface. Encrypted at Node Registry HEB-02C.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    const ENGINE_CONFIG = {
+        JITTER_MS: 380,
+        LOG_FREQ_MS: 4000,
+        BASE_RATE: 8.5,
+        PEAK_MULTIPLIER: 1.30, 
+        INITIAL_ENERGY: 388.4
+    };
+
+    let hebState = {
+        energy: ENGINE_CONFIG.INITIAL_ENERGY,
+        revenue: 3301.0,
+        supply: 412.5,
+        ghi: 42
+    };
+
+    let profileChart = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        initIndustrialChart();
+        startOperationalHandshake();
+
+        setInterval(executeTelemetryJitter, ENGINE_CONFIG.JITTER_MS);
+
+        setInterval(generateAuditPulse, ENGINE_CONFIG.LOG_FREQ_MS);
+    });
+
+    function executeTelemetryJitter() {
+        const jitter = (Math.random() - 0.5) * 0.55;
+        hebState.energy = Math.max(20, hebState.energy + jitter);
+        hebState.supply = hebState.energy * 1.058;
+
+        hebState.revenue += (Math.abs(jitter) * ENGINE_CONFIG.BASE_RATE * 0.012);
+
+        updateDOM('metric-cons', hebState.energy.toFixed(2));
+        updateDOM('metric-supply', hebState.supply.toFixed(2));
+        updateDOM('metric-loss', (hebState.supply - hebState.energy).toFixed(2));
+        updateDOM('metric-rev', Math.floor(hebState.revenue).toLocaleString());
+        
+        const leakage = (hebState.supply - hebState.energy) * ENGINE_CONFIG.BASE_RATE;
+        document.getElementById('metric-leakage').innerText = '₹' + leakage.toFixed(2) + ' REVENUE LOSS DETECTED';
+        
+        document.getElementById('last-handshake').innerText = new Date().toLocaleTimeString('en-GB', {hour12:false});
+    }
+
+    function updateDOM(id, val) {
+        const el = document.getElementById(id);
+        if(el) el.innerText = val;
+    }
+
+    function generateAuditPulse() {
+        const events = [
+            'LOAD_LIMIT_EXCEED', 'VOLTAGE_SAG_DET', 'SURCHARGE_POST', 
+            'THERMAL_OVERLOAD', 'GRID_CAPACITY_CRIT', 'PHASE_SHIFT_FAIL',
+            'ISO_HANDSHAKE_PND', 'TRANSIENT_SPIKE'
+        ];
+        const evt = events[Math.floor(Math.random() * events.length)];
+        
+        const window = document.getElementById('hebbal-ledger-window');
+        const row = document.createElement('div');
+        row.className = 'audit-line';
+        row.innerHTML = `
+            <span class="a-ts">${new Date().toLocaleString('en-GB')}</span>
+            <span class="a-code">${evt}</span>
+            <span class="flex-grow-1 text-muted fw-bold small">SCADA ALERT: [HEB-HUB-02C] Critical Thermal Threshold Breached.</span>
+            <span class="text-danger fw-black mono small">[CRITICAL]</span>
+        `;
+        window.prepend(row);
+        
+        if(window.children.length > 50) window.lastChild.remove();
+    }
+
+    function initIndustrialChart() {
+        const ctx = document.getElementById('hebbal-profile-chart').getContext('2d');
+        
+        const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
+
+        const actualLoad = hours.map((_, i) => 120 + Math.sin(i/3.8)*100 + Math.random()*20);
+        const limitLine = hours.map(() => 400);
+
+        profileChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: hours,
+                datasets: [
+                    { 
+                        label: 'Active Hub Load (kWh)', 
+                        data: actualLoad, 
+                        backgroundColor: 'rgba(239, 68, 68, 0.4)', 
+                        borderRadius: 12, 
+                        borderSkipped: false 
+                    },
+                    { 
+                        label: 'Node Physical Limit', 
+                        data: limitLine, 
+                        type: 'line', 
+                        borderColor: '#ef4444', 
+                        borderWidth: 2, 
+                        borderDash: [10, 5],
+                        pointRadius: 0,
+                        fill: false 
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { position: 'top', labels: { color: '#94a3b8', font: { weight: '900', size: 14 } } } 
+                },
+                scales: {
+                    y: { 
+                        grid: { color: 'rgba(255,255,255,0.03)', lineWidth: 1 }, 
+                        ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', weight: '700' } } 
+                    },
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', weight: '700' } } 
+                    }
+                }
+            }
+        });
+    }
+
+    async function startOperationalHandshake() {
+        console.log("OS-HANDSHAKE-HEB: CRITICAL_SUCCESS");
+    }
+
+</script>
+</body>
+</html>

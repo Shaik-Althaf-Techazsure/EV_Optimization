@@ -1,0 +1,25 @@
+2026-05-06 15:28:17,560 - GridSense-OS - INFO - [TZ-AC99AC88] - Starting GridSense Pro Pre-flight integrity check...
+2026-05-06 15:28:18,788 - GridSense-OS - INFO - [TZ-AC99AC88] - MySQL Connection Pool initialized successfully.
+2026-05-06 15:28:18,788 - GridSense-OS - INFO - [TZ-AC99AC88] - Pre-flight: MySQL Handshake SUCCESS.
+2026-05-06 15:28:18,788 - GridSense-OS - INFO - [TZ-AC99AC88] - --- TECHAZSURE GRIDSENSE OS BOOTED | PORT 5000 ---
+2026-05-06 15:28:20,363 - GridSense-OS - ERROR - [TZ-AC99AC88] - Summary API Error: 'ROI_Savings_INR'
+2026-05-06 15:28:47,116 - GridSense-OS - INFO - [TZ-CF1C770B] - Starting GridSense Pro Pre-flight integrity check...
+2026-05-06 15:28:48,324 - GridSense-OS - INFO - [TZ-CF1C770B] - MySQL Connection Pool initialized successfully.
+2026-05-06 15:28:48,326 - GridSense-OS - INFO - [TZ-CF1C770B] - Pre-flight: MySQL Handshake SUCCESS.
+2026-05-06 15:28:48,326 - GridSense-OS - INFO - [TZ-CF1C770B] - --- TECHAZSURE GRIDSENSE OS BOOTED | PORT 5000 ---
+2026-05-06 15:29:31,609 - GridSense-OS - INFO - [TZ-07771767] - Starting GridSense Pro Pre-flight integrity check...
+2026-05-06 15:29:32,823 - GridSense-OS - INFO - [TZ-07771767] - MySQL Connection Pool initialized successfully.
+2026-05-06 15:29:32,823 - GridSense-OS - INFO - [TZ-07771767] - Pre-flight: MySQL Handshake SUCCESS.
+2026-05-06 15:29:32,823 - GridSense-OS - INFO - [TZ-07771767] - --- TECHAZSURE GRIDSENSE OS BOOTED | PORT 5000 ---
+2026-05-06 15:31:03,500 - GridSense-OS - INFO - [TZ-129FC5BF] - Starting GridSense Pro Pre-flight integrity check...
+2026-05-06 15:31:04,653 - GridSense-OS - INFO - [TZ-129FC5BF] - MySQL Connection Pool initialized successfully.
+2026-05-06 15:31:04,654 - GridSense-OS - INFO - [TZ-129FC5BF] - Pre-flight: MySQL Handshake SUCCESS.
+2026-05-06 15:31:04,654 - GridSense-OS - INFO - [TZ-129FC5BF] - --- TECHAZSURE GRIDSENSE OS BOOTED | PORT 5000 ---
+2026-05-06 15:34:38,256 - GridSense-OS - INFO - [TZ-90862BA5] - Starting GridSense Pro Pre-flight integrity check...
+2026-05-06 15:34:39,480 - GridSense-OS - INFO - [TZ-90862BA5] - MySQL Connection Pool initialized successfully.
+2026-05-06 15:34:39,480 - GridSense-OS - INFO - [TZ-90862BA5] - Pre-flight: MySQL Handshake SUCCESS.
+2026-05-06 15:34:39,483 - GridSense-OS - INFO - [TZ-90862BA5] - --- TECHAZSURE GRIDSENSE OS BOOTED | PORT 5000 ---
+2026-05-06 15:35:07,325 - GridSense-OS - INFO - [TZ-99ADAF54] - Starting GridSense Pro Pre-flight integrity check...
+2026-05-06 15:35:08,478 - GridSense-OS - INFO - [TZ-99ADAF54] - MySQL Connection Pool initialized successfully.
+2026-05-06 15:35:08,478 - GridSense-OS - INFO - [TZ-99ADAF54] - Pre-flight: MySQL Handshake SUCCESS.
+2026-05-06 15:35:08,478 - GridSense-OS - INFO - [TZ-99ADAF54] - --- TECHAZSURE GRIDSENSE OS BOOTED | PORT 5000 ---

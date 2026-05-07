@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechAZsure | Grid Audit Registry (Industrial Grade)</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --tz-primary: #0ea5e9;
+            --tz-primary-glow: rgba(14, 165, 233, 0.4);
+            --tz-bg: #020617;
+            --tz-sidebar: #0f172a;
+            --tz-card: #1e293b;
+            --tz-border: #334155;
+            --tz-text: #f1f5f9;
+            --tz-text-muted: #94a3b8;
+            --tz-success: #10b981;
+            --tz-danger: #ef4444;
+            --tz-warning: #f59e0b;
+            --tz-info: #06b6d4;
+
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-industrial: 0 40px 80px -20px rgba(0, 0, 0, 0.9);
+            --glass-bg: rgba(15, 23, 42, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; border: none; outline: none !important; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--tz-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--tz-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--tz-primary); }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--tz-bg);
+            color: var(--tz-text);
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .top-nav {
+            background: var(--tz-sidebar);
+            border-bottom: 1px solid var(--tz-border);
+            padding: 1rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 3000;
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-zone { display: flex; align-items: center; gap: 15px; text-decoration: none; }
+        .logo-frame {
+            width: 42px; height: 40px;
+            background: linear-gradient(135deg, var(--tz-primary), var(--tz-info));
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px var(--tz-primary-glow);
+        }
+
+        .area-hero {
+            padding: 6rem 4rem; 
+            background: linear-gradient(145deg, #1e293b 0%, #020617 100%);
+            border-bottom: 2px solid var(--tz-border);
+            position: relative; overflow: hidden;
+        }
+        .hero-bg-fx { 
+            position: absolute; top: -30%; right: -5%; width: 50%; height: 160%; 
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.12) 0%, transparent 75%); 
+            filter: blur(80px); pointer-events: none; 
+        }
+
+        .status-badge-live {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--tz-primary);
+            border: 1px solid var(--tz-primary);
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            display: inline-flex;
+            align-items: center; gap: 8px;
+        }
+        .live-dot { width: 8px; height: 8px; background: var(--tz-primary); border-radius: 50%; box-shadow: 0 0 12px var(--tz-primary); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; margin-top: -4.5rem; padding: 0 4rem; position: relative; z-index: 100; }
+        .metric-card {
+            background: var(--glass-bg); backdrop-filter: blur(40px);
+            border: 1.5px solid var(--glass-border); border-radius: 2.75rem;
+            padding: 3rem; transition: var(--transition-smooth);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .metric-card:hover { transform: translateY(-12px); border-color: var(--tz-primary); box-shadow: var(--shadow-industrial); }
+
+        .m-tag { font-size: 0.7rem; font-weight: 900; color: var(--tz-text-muted); text-transform: uppercase; letter-spacing: 0.2em; display: block; margin-bottom: 1.5rem; }
+        .m-val { font-size: 3.25rem; font-weight: 900; color: white; line-height: 1; letter-spacing: -0.05em; display: flex; align-items: baseline; }
+        .m-unit { font-size: 1.15rem; color: var(--tz-text-muted); font-weight: 700; margin-left: 10px; }
+
+        .compliance-box { background: var(--tz-card); border: 1.5px solid var(--tz-border); border-radius: 3rem; padding: 3rem; position: relative; }
+        .circular-score { width: 140px; height: 140px; border: 8px solid #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
+        .circular-score::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 4px solid var(--tz-success); border-top-color: transparent; animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .main-container { padding: 5rem 4rem; }
+        .table-frame { border-radius: 3rem; overflow: hidden; border: 1.5px solid var(--tz-border); background: #01040a; box-shadow: var(--shadow-industrial); }
+        .industrial-table { width: 100%; border-collapse: collapse; }
+        .industrial-table th { padding: 2rem 1.5rem; background: rgba(15, 23, 42, 0.8); text-align: left; font-size: 0.85rem; text-transform: uppercase; color: var(--tz-text-muted); font-weight: 900; border-bottom: 1.5px solid var(--tz-border); letter-spacing: 0.15em; }
+        .industrial-table td { padding: 1.75rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.95rem; font-family: 'JetBrains Mono', monospace; }
+        .industrial-table tr:hover td { background: rgba(14, 165, 233, 0.05); }
+
+        .type-pill { padding: 4px 12px; border-radius: 6px; font-size: 0.65rem; font-weight: 900; letter-spacing: 0.1em; display: inline-block; text-align: center; min-width: 130px; }
+        .type-ml { background: rgba(6, 182, 212, 0.1); color: var(--tz-info); border: 1px solid var(--tz-info); }
+        .type-iot { background: rgba(14, 165, 233, 0.1); color: var(--tz-primary); border: 1px solid var(--tz-primary); }
+        .type-settlement { background: rgba(16, 185, 129, 0.1); color: var(--tz-success); border: 1px solid var(--tz-success); }
+        .type-alert { background: rgba(239, 68, 68, 0.1); color: var(--tz-danger); border: 1px solid var(--tz-danger); }
+
+        .integrity-module { background: rgba(255,255,255,0.02); border: 1px solid var(--tz-border); border-radius: 3rem; padding: 3rem; height: 100%; }
+        .progress-industrial { height: 10px; background: #020617; border-radius: 20px; overflow: hidden; margin: 1.5rem 0; }
+        .progress-fill { height: 100%; background: var(--tz-primary); border-radius: 20px; transition: width 2s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .fw-black { font-weight: 900; }
+        .text-glow { text-shadow: 0 0 30px var(--tz-primary-glow); }
+        .btn-action-industrial { background: var(--tz-primary); color: white; padding: 0.9rem 2.5rem; border-radius: 1.25rem; font-weight: 900; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.15em; transition: var(--transition-smooth); box-shadow: 0 15px 30px var(--tz-primary-glow); }
+        .btn-action-industrial:hover { transform: translateY(-5px); background: white; color: var(--tz-primary); }
+
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="d-flex align-items-center gap-5">
+        <a href="index.html" class="brand-zone">
+            <div class="logo-frame"><i data-lucide="zap" color="white" size="26"></i></div>
+            <div>
+                <h4 class="m-0 fw-black text-white">GridSense</h4>
+                <span class="text-primary small fw-black tracking-widest" style="font-size: 0.6rem;">AUDIT HUB</span>
+            </div>
+        </a>
+        <div class="d-none d-xl-flex gap-5">
+            <a href="index.html" class="text-muted text-decoration-none small fw-black tracking-widest">CLUSTER HUB</a>
+            <a href="load_balancing.html" class="text-muted text-decoration-none small fw-black tracking-widest">PART A: LOAD SHIFT</a>
+            <a href="asset_roadmap.html" class="text-muted text-decoration-none small fw-black tracking-widest">PART B: ROADMAP</a>
+            <a href="#" class="text-white text-decoration-none small fw-black tracking-widest border-bottom border-primary pb-1">AUDIT REGISTRY</a>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-5">
+        <div class="status-badge-live">
+            <div class="live-dot"></div>
+            <span class="mono">LEDGER_SYNC: SECURE</span>
+        </div>
+        <button class="btn-action-industrial" onclick="exportFullAudit()">EXPORT FULL REGISTRY</button>
+    </div>
+</nav>
+
+<section class="area-hero">
+    <div class="hero-bg-fx"></div>
+    <div class="row align-items-center position-relative">
+        <div class="col-lg-8">
+            <div class="badge bg-primary bg-opacity-10 text-primary fw-black px-4 py-2 mb-4" style="font-size: 12px; letter-spacing: 0.25em; border-radius: 8px; border: 1px solid rgba(14,165,233,0.3);">GOVERNMENT OFFICIAL LEDGER OF RECORD</div>
+            <h1 class="display-1 fw-black text-white m-0" style="letter-spacing: -0.04em;">GRID AUDIT REGISTRY</h1>
+            <p class="text-muted display-6 mt-3 fw-bold">Secure Cryptographic Ledger for Operational Transparency</p>
+            
+            <div class="d-flex gap-5 mt-5 pt-4">
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Ledger Protocol</span>
+                    <span class="text-cyan fw-bold fs-3">SECURE-V7-SHA256</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Accountability Index</span>
+                    <span class="text-emerald fw-bold fs-3">100.00% (AUDITED)</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Verification Authority</span>
+                    <span class="text-primary fw-bold fs-3">BESCOM-HUB-B102</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 text-end">
+            <div class="compliance-box d-inline-block text-start" style="min-width: 400px;">
+                <span class="m-tag mb-4">System Integrity Score</span>
+                <div class="d-flex align-items-center gap-5">
+                    <div class="circular-score">
+                        <div class="stat-value text-success display-3 fw-black">99.9</div>
+                        <span class="x-small text-muted fw-bold">PERCENT</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="progress-industrial mb-3">
+                            <div class="progress-fill" style="width: 99.9%; background: var(--tz-success);"></div>
+                        </div>
+                        <span class="x-small text-muted mono fw-black">VALIDATED ACROSS 6 CLUSTERS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="metric-grid">
+    <div class="metric-card">
+        <span class="m-tag">Logged Transactions</span>
+        <div class="m-val text-glow"><span id="m-count">48,254</span></div>
+        <div class="m-trend text-success"><i data-lucide="shield-check" size="18"></i> Immutable Record</div>
+    </div>
+    <div class="metric-card">
+        <span class="m-tag">Authenticated Handshakes</span>
+        <div class="m-val"><span id="m-hand">8,102</span></div>
+        <div class="m-trend text-info"><i data-lucide="key" size="18"></i> TLS 1.3 Encryption</div>
+    </div>
+    <div class="metric-card">
+        <span class="m-tag">SCADA Validation Rate</span>
+        <div class="m-val text-emerald"><span id="m-scada">99.8</span><span class="m-unit">%</span></div>
+        <div class="m-trend text-emerald fw-bold"><i data-lucide="check-circle" size="18"></i> Error Correction Active</div>
+    </div>
+    <div class="metric-card">
+        <span class="m-tag">Authorized System Ops</span>
+        <div class="m-val"><span id="m-ops">142</span></div>
+        <div class="m-trend text-muted"><i data-lucide="user-check" size="18"></i> Admin Credentials Only</div>
+    </div>
+</section>
+
+<main class="main-container">
+
+    <div class="row g-5 mb-5">
+        <div class="col-lg-8">
+            <div class="data-section-header">
+                <h2 class="data-section-title"><i data-lucide="file-text" class="text-primary"></i> Master Transaction Ledger</h2>
+                <div class="d-flex gap-3">
+                    <select class="form-select form-select-sm bg-dark text-white border-secondary rounded-pill px-4" style="width: 200px;" id="log-filter" onchange="refreshRegistry()">
+                        <option value="ALL">All Entries</option>
+                        <option value="ML">Part A: ML Decisions</option>
+                        <option value="INFRA">Part B: Planning</option>
+                        <option value="SETTLEMENT">Financial Settlement</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-frame">
+                <table class="industrial-table">
+                    <thead>
+                        <tr>
+                            <th>Verification Code</th>
+                            <th>Timestamp</th>
+                            <th>Registry Type</th>
+                            <th>Subdivision</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registry-body">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="data-section-header">
+                <h2 class="data-section-title"><i data-lucide="activity" class="text-primary"></i> System Integrity</h2>
+            </div>
+            
+            <div class="d-flex flex-column gap-4">
+                <div class="integrity-module">
+                    <h6 class="fw-black mb-4 small tracking-widest text-muted uppercase">Security Health Audit</h6>
+                    <div class="mb-5">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="small fw-bold">Encryption Protocol</span>
+                            <span class="small text-success fw-bold">TLS 1.3 PASS</span>
+                        </div>
+                        <div class="progress-industrial"><div class="progress-fill" style="width: 100%;"></div></div>
+                    </div>
+                    <div class="mb-5">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="small fw-bold">Database Persistence</span>
+                            <span class="small text-success fw-bold">STABLE</span>
+                        </div>
+                        <div class="progress-industrial"><div class="progress-fill" style="width: 98%;"></div></div>
+                    </div>
+                    <div class="mb-5">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="small fw-bold">ML Prediction Uptime</span>
+                            <span class="small text-info fw-bold">99.2%</span>
+                        </div>
+                        <div class="progress-industrial"><div class="progress-fill" style="width: 99%;"></div></div>
+                    </div>
+                    <hr class="border-secondary opacity-10 my-5">
+                    <p class="x-small text-muted italic">System performing automated CRC integrity checks on all regional IoT frames every 5 seconds. No data corruption detected.</p>
+                </div>
+
+                <div class="integrity-module" style="background: linear-gradient(145deg, rgba(14, 165, 233, 0.05), transparent);">
+                    <h6 class="fw-black mb-4 small tracking-widest text-primary uppercase">Official Verification Note</h6>
+                    <p class="small text-muted leading-relaxed">
+                        This registry is compliant with the <span class="text-white fw-bold">Information Technology Act, 2000 (India)</span> regarding digital records. 
+                        Every entry is timestamped against the <span class="text-white fw-bold">NIST Global Clock</span> and verified by the BESCOM-HUB Digital Signature authority.
+                    </p>
+                    <button class="btn btn-outline-primary btn-sm w-100 mt-4 fw-bold py-2 rounded-pill">VIEW COMPLIANCE CERTIFICATE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer class="mt-5 pt-5 pb-5 text-center text-muted small border-top border-secondary border-opacity-10">
+    <p>© 2026 TechAZsure Private Limited. BESCOM Industrial Grid Audit & Accountability Interface. Protocol: REGISTRY_CORE_V1.1</p>
+</footer>
+
+<script>
+
+    const CONFIG = {
+        JITTER_MS: 400,
+        LOG_FREQ_MS: 1500,
+        BASE_COUNT: 48254,
+        BASE_HAND: 8102
+    };
+
+    let registryState = {
+        count: CONFIG.BASE_COUNT,
+        hand: CONFIG.BASE_HAND,
+        logs: []
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        initRegistry();
+
+        setInterval(executeLiveJitter, CONFIG.JITTER_MS);
+        setInterval(injectLiveAuditLine, CONFIG.LOG_FREQ_MS);
+    });
+
+
+    function executeLiveJitter() {
+        const jitter = Math.floor(Math.random() * 3);
+        registryState.count += jitter;
+        if(Math.random() > 0.8) registryState.hand += 1;
+        
+        document.getElementById('m-count').innerText = registryState.count.toLocaleString();
+        document.getElementById('m-hand').innerText = registryState.hand.toLocaleString();
+    }
+
+
+    function initRegistry() {
+        const body = document.getElementById('registry-body');
+        for(let i=0; i<15; i++) {
+            injectLiveAuditLine(true);
+        }
+    }
+
+    function injectLiveAuditLine(isInitial = false) {
+        const body = document.getElementById('registry-body');
+        const types = [
+            {code: 'PART_A_PREDICT', type: 'type-ml', subdivision: 'Whitefield', label: 'ML_DEMAND_SYNC'},
+            {code: 'PART_B_GHI_RECALC', type: 'type-iot', subdivision: 'HSR Layout', label: 'INFRA_PLANNING'},
+            {code: 'REVENUE_POST', type: 'type-settlement', subdivision: 'Indiranagar', label: 'ROI_SETTLEMENT'},
+            {code: 'GRID_STRESS_ALERT', type: 'type-alert', subdivision: 'Hebbal', label: 'SCADA_CRITICAL'}
+        ];
+        
+        const filter = document.getElementById('log-filter').value;
+        const entry = types[Math.floor(Math.random() * types.length)];
+        
+        if(!isInitial && filter !== 'ALL') {
+            if(filter === 'ML' && entry.type !== 'type-ml') return;
+            if(filter === 'INFRA' && entry.type !== 'type-iot') return;
+            if(filter === 'SETTLEMENT' && entry.type !== 'type-settlement') return;
+        }
+
+        const row = document.createElement('tr');
+        const hash = (Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8)).toUpperCase();
+        
+        row.innerHTML = `
+            <td class="text-primary fw-bold">TX_${hash}</td>
+            <td class="text-muted">${new Date().toLocaleTimeString('en-GB', {hour12:false})}</td>
+            <td><span class="type-pill ${entry.type}">${entry.label}</span></td>
+            <td class="fw-bold">${entry.subdivision}</td>
+            <td><span class="text-success fw-bold">VERIFIED</span></td>
+        `;
+
+        if(isInitial) {
+            body.appendChild(row);
+        } else {
+            body.prepend(row);
+            if(body.children.length > 50) body.lastChild.remove();
+        }
+    }
+
+    function refreshRegistry() {
+        document.getElementById('registry-body').innerHTML = '';
+        initRegistry();
+    }
+
+    function exportFullAudit() {
+        alert("Preparing Secure PDF Audit Export for Authority BESCOM-HUB-B102. Please wait...");
+    }
+
+</script>
+</body>
+</html>

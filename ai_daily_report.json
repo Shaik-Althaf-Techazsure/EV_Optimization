@@ -1,0 +1,44 @@
+[
+    {
+        "zone": "HSR Layout",
+        "ghi_score": "10.0%",
+        "status": "ACTION REQUIRED",
+        "roi_savings": "\u20b92,035,000",
+        "ai_agent_recommendation": "Zone HSR Layout shows an average health index of 10.0%. Critical congestion detected. AI recommends immediate deployment of additional 50kW Fast Charging station to relieve DT load."
+    },
+    {
+        "zone": "Hebbal",
+        "ghi_score": "10.0%",
+        "status": "ACTION REQUIRED",
+        "roi_savings": "\u20b91,166,000",
+        "ai_agent_recommendation": "Zone Hebbal shows an average health index of 10.0%. Critical congestion detected. AI recommends immediate deployment of additional 50kW Fast Charging station to relieve DT load."
+    },
+    {
+        "zone": "Indiranagar",
+        "ghi_score": "16.3%",
+        "status": "ACTION REQUIRED",
+        "roi_savings": "\u20b91,138,500",
+        "ai_agent_recommendation": "Zone Indiranagar shows an average health index of 16.3%. Critical congestion detected. AI recommends immediate deployment of additional 50kW Fast Charging station to relieve DT load."
+    },
+    {
+        "zone": "Koramangala",
+        "ghi_score": "11.6%",
+        "status": "ACTION REQUIRED",
+        "roi_savings": "\u20b91,105,500",
+        "ai_agent_recommendation": "Zone Koramangala shows an average health index of 11.6%. Critical congestion detected. AI recommends immediate deployment of additional 50kW Fast Charging station to relieve DT load."
+    },
+    {
+        "zone": "Electronic City",
+        "ghi_score": "21.2%",
+        "status": "ACTION REQUIRED",
+        "roi_savings": "\u20b91,006,500",
+        "ai_agent_recommendation": "Zone Electronic City shows an average health index of 21.2%. Critical congestion detected. AI recommends immediate deployment of additional 50kW Fast Charging station to relieve DT load."
+    },
+    {
+        "zone": "Whitefield",
+        "ghi_score": "25.8%",
+        "status": "ACTION REQUIRED",
+        "roi_savings": "\u20b90",
+        "ai_agent_recommendation": "Zone Whitefield shows an average health index of 25.8%. Critical congestion detected. AI recommends immediate deployment of additional 50kW Fast Charging station to relieve DT load."
+    }
+]

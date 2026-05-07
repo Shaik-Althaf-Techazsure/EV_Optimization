@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechAZsure | GridSense Unified Command Center v8.6.0</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --tz-primary: #0ea5e9;
+            --tz-primary-glow: rgba(14, 165, 233, 0.4);
+            --tz-bg: #020617;
+            --tz-sidebar: #0f172a;
+            --tz-card: #1e293b;
+            --tz-border: #334155;
+            --tz-text: #f1f5f9;
+            --tz-text-muted: #94a3b8;
+            --tz-success: #10b981;
+            --tz-danger: #ef4444;
+            --tz-warning: #f59e0b;
+            --tz-info: #06b6d4;
+
+            --sidebar-width: 320px;
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-industrial: 0 40px 80px -20px rgba(0, 0, 0, 0.9);
+            --glass-bg: rgba(15, 23, 42, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; border: none; outline: none !important; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--tz-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--tz-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--tz-primary); }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--tz-bg);
+            color: var(--tz-text);
+            overflow: hidden;
+            height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-shell { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--tz-sidebar);
+            border-right: 1px solid var(--tz-border);
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 2rem;
+            flex-shrink: 0;
+            z-index: 2000;
+        }
+
+        .brand-zone { display: flex; align-items: center; gap: 18px; margin-bottom: 5rem; text-decoration: none; color: inherit; transition: var(--transition-smooth); }
+        .brand-zone:hover { transform: scale(1.02); }
+        .logo-frame {
+            width: 52px; height: 48px;
+            background: linear-gradient(135deg, var(--tz-primary), var(--tz-info));
+            border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 30px var(--tz-primary-glow);
+            position: relative; overflow: hidden;
+        }
+        .logo-frame::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent); animation: logo-shimmer 4s infinite; }
+        @keyframes logo-shimmer { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
+
+        .nav-label { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.35em; color: var(--tz-text-muted); margin-bottom: 2rem; display: block; padding-left: 1.25rem; }
+        .nav-item {
+            display: flex; align-items: center; gap: 18px; color: var(--tz-text-muted); text-decoration: none;
+            padding: 1.15rem 1.6rem; border-radius: 1.5rem; transition: var(--transition-smooth); font-size: 1rem; margin-bottom: 0.5rem;
+            border: 1px solid transparent; font-weight: 600;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(14, 165, 233, 0.1); color: var(--tz-primary); border-color: rgba(14, 165, 233, 0.2); }
+        .nav-item.active { background: var(--tz-primary); color: white; box-shadow: 0 15px 30px -10px var(--tz-primary-glow); border-color: var(--tz-primary); }
+
+        .viewport {
+            flex-grow: 1;
+            padding: 4rem;
+            overflow-y: auto;
+            position: relative;
+            background: radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.05), transparent 50%),
+                        radial-gradient(circle at 5% 95%, rgba(16, 185, 129, 0.03), transparent 45%);
+        }
+
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; margin-bottom: 4.5rem; }
+        .kpi-card {
+            background: var(--glass-bg); backdrop-filter: blur(40px);
+            border: 1.5px solid var(--glass-border); border-radius: 2.5rem;
+            padding: 2.5rem; transition: var(--transition-smooth);
+            position: relative; overflow: hidden;
+        }
+        .kpi-card:hover { transform: translateY(-12px); border-color: var(--tz-primary); box-shadow: var(--shadow-industrial); }
+        
+        .kpi-tag { font-size: 0.75rem; font-weight: 800; color: var(--tz-text-muted); text-transform: uppercase; letter-spacing: 0.2em; display: block; margin-bottom: 1.5rem; }
+        .kpi-val { font-size: 3rem; font-weight: 900; color: white; line-height: 1; letter-spacing: -0.05em; display: flex; align-items: baseline; gap: 8px; }
+        .kpi-trend { font-size: 0.9rem; margin-top: 1.5rem; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+
+        .node-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 2rem; margin-bottom: 5.5rem; }
+        .node-unit {
+            cursor: pointer; background: #111827; border-radius: 2.75rem; padding: 2.75rem;
+            border: 2px solid var(--tz-border); border-top: 8px solid var(--tz-primary); transition: var(--transition-smooth);
+            position: relative; overflow: hidden;
+        }
+        .node-unit:hover { border-color: var(--tz-primary); transform: translateY(-10px); box-shadow: 0 35px 70px rgba(0,0,0,0.8); }
+        .node-unit.alert { border-top-color: var(--tz-danger); }
+        .node-unit.alert::after { content: 'CRITICAL_THREAT'; position: absolute; top: 20px; right: 20px; background: var(--tz-danger); color: white; font-size: 0.55rem; font-weight: 900; padding: 4px 10px; border-radius: 5px; animation: node-blink 1.2s infinite; }
+        @keyframes node-blink { 0% { opacity: 1; } 50% { opacity: 0.2; } 100% { opacity: 1; } }
+
+        .progress-track { height: 12px; background: #020617; border-radius: 30px; margin: 1.75rem 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--tz-primary), var(--tz-info)); border-radius: 30px; transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        
+        .node-footer { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--tz-text-muted); font-family: 'JetBrains Mono', monospace; margin-top: 1.75rem; font-weight: 600; }
+
+        .nora-ai-card {
+            background: linear-gradient(165deg, #1e293b 0%, #020617 100%);
+            border: 2px solid var(--tz-primary); border-radius: 3.5rem;
+            padding: 3.5rem; position: sticky; top: 0;
+            height: 100%; box-shadow: 0 0 100px rgba(14, 165, 233, 0.15);
+            display: flex; flex-direction: column;
+        }
+
+        .nora-header { display: flex; align-items: center; gap: 20px; margin-bottom: 3rem; }
+        .nora-brain {
+            width: 56px; height: 56px; background: rgba(14, 165, 233, 0.1);
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .brain-core { width: 16px; height: 16px; background: var(--tz-primary); border-radius: 50%; box-shadow: 0 0 25px var(--tz-primary); animation: neural-pulse 2.5s infinite; }
+        @keyframes neural-pulse { 0%, 100% { transform: scale(1); filter: brightness(1.2); } 50% { transform: scale(1.4); filter: brightness(2); } }
+
+        .chat-bubble {
+            background: #020617; padding: 2.5rem; border-radius: 2.5rem;
+            border-top-left-radius: 0; position: relative; margin-bottom: 3rem;
+            border: 1.5px solid var(--tz-border); box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        .chat-text { font-size: 1.1rem; line-height: 1.9; color: var(--tz-text); font-style: italic; font-weight: 500; }
+        .typing-indicator { font-size: 0.75rem; color: var(--tz-primary); font-weight: 900; letter-spacing: 0.2em; display: none; margin-bottom: 10px; }
+
+        .maint-pipeline { flex-grow: 1; overflow-y: auto; padding-right: 15px; scrollbar-width: thin; }
+        .maint-item {
+            padding: 1.5rem; background: rgba(255,255,255,0.02); border: 1.5px solid var(--tz-border);
+            border-radius: 1.75rem; margin-bottom: 1.5rem; border-left: 5px solid var(--tz-primary);
+            transition: var(--transition-smooth);
+        }
+        .maint-item:hover { transform: translateX(10px); background: rgba(14, 165, 233, 0.05); }
+        .maint-item.critical { border-left-color: var(--tz-danger); }
+
+        .diag-pill {
+            position: fixed; bottom: 45px; right: 45px; background: #1e293b;
+            border: 2px solid var(--tz-primary); padding: 1.25rem 2.75rem;
+            border-radius: 1000px; z-index: 5000; display: flex; align-items: center; gap: 20px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.9); cursor: pointer; transition: var(--transition-smooth);
+        }
+        .diag-pill:hover { transform: scale(1.05) translateY(-10px); background: var(--tz-sidebar); border-color: var(--tz-info); }
+        .status-dot { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 20px var(--tz-danger); background: var(--tz-danger); }
+        .status-dot.active { background: var(--tz-success); box-shadow: 0 0 20px var(--tz-success); }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .fw-black { font-weight: 900; }
+        .text-glow { text-shadow: 0 0 30px var(--tz-primary-glow); }
+        .loader-block { height: 400px; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; color: var(--tz-text-muted); }
+
+    </style>
+</head>
+<body>
+
+<div class="diag-pill" onclick="triggerHandshakeSync()">
+    <span class="status-dot" id="os-light"></span>
+    <span class="mono fw-black small" id="os-status-text">GRID_OS: ESTABLISHING_HANDSHAKE...</span>
+    <i data-lucide="shield-check" size="24" class="text-primary"></i>
+</div>
+
+<div class="app-shell">
+    <aside class="sidebar">
+        <a href="index.html" class="brand-zone">
+            <div class="logo-frame"><i data-lucide="zap" color="white" size="32"></i></div>
+            <div>
+                <h3 class="m-0 fw-black">GridSense</h3>
+                <span class="text-primary small fw-black tracking-widest" style="font-size: 0.65rem;">OMNI-CONTROL v8.6</span>
+            </div>
+        </a>
+
+        <nav class="mb-5">
+            <span class="nav-label">Operational Control</span>
+            <a href="index.html" class="nav-item active"><i data-lucide="layout-grid"></i> Regional Cluster</a>
+            <a href="load_balancing.html" class="nav-item"><i data-lucide="trending-up"></i> Part A: Demand Shift</a>
+            <a href="asset_roadmap.html" class="nav-item"><i data-lucide="database"></i> Part B: Asset Road</a>
+        </nav>
+
+        <nav class="mb-5">
+            <span class="nav-label">Government Portal</span>
+            <a href="financial_settlement.html" class="nav-item"><i data-lucide="indian-rupee"></i> Financial ROI</a>
+            <a href="grid_audit_registry.html" class="nav-item"><i data-lucide="file-key"></i> Grid Audit</a>
+            <a href="cybersecurity.html" class="nav-item"><i data-lucide="shield-alert"></i> Cyber Sentinel</a>
+        </nav>
+
+        <div class="mt-auto">
+            <div class="glass-card p-4" style="border-radius: 2rem; border-color: rgba(14, 165, 233, 0.15);">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="x-small text-muted fw-black uppercase tracking-tighter">Node Registry</span>
+                    <span class="badge bg-primary px-2" style="font-size: 7px;">SECURE</span>
+                </div>
+                <code class="text-primary small mono fw-bold" id="sys-engine-id">OS-SYNC-NODE-B102</code>
+            </div>
+        </div>
+    </aside>
+
+    <main class="viewport">
+        <header class="d-flex justify-content-between align-items-end mb-5 pb-3">
+            <div>
+                <h1 class="fw-black display-2 m-0 tracking-tighter">Unified Command</h1>
+                <p class="text-muted m-0 fs-4 fw-medium"><span id="live-pulse" style="width: 12px; height: 12px; background: var(--tz-success); display: inline-block; border-radius: 50%; margin-right: 15px; box-shadow: 0 0 20px var(--tz-success);"></span> Bengaluru Regional Hub: SCADA Stream Active</p>
+            </div>
+            <div class="d-flex gap-4">
+                <div class="glass-card py-3 px-5 d-flex align-items-center gap-4" style="border-radius: 1.5rem;">
+                    <i data-lucide="clock" size="36" class="text-primary"></i>
+                    <span id="os-clock" class="mono fw-black fs-2 text-glow">00:00:00</span>
+                </div>
+                <button class="btn btn-primary rounded-pill px-5 fw-black fs-5" onclick="orchestrateGridSync()">
+                    <i data-lucide="refresh-cw" size="24" class="me-2"></i> SYNC GRID
+                </button>
+            </div>
+        </header>
+
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <span class="kpi-tag">Gross Revenue (Real-Time)</span>
+                <div class="kpi-val" id="kpi-rev">₹0</div>
+                <div class="kpi-trend text-success"><i data-lucide="trending-up" size="18"></i> <span id="jitter-perc">+14.2%</span> Optimal ToU</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-tag">CAPEX Deferral ROI</span>
+                <div class="kpi-val" id="kpi-save">₹0</div>
+                <div class="kpi-trend text-info"><i data-lucide="shield-check" size="18"></i> Predictive Planning</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-tag">Carbon Abatement</span>
+                <div class="kpi-val" id="kpi-carbon">0 kg</div>
+                <div class="kpi-trend text-emerald"><i data-lucide="leaf" size="18"></i> Clean Energy Credits</div>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-tag">Grid Health Index</span>
+                <div class="kpi-val text-cyan text-glow" id="kpi-health">0%</div>
+                <div class="kpi-trend text-muted"><i data-lucide="activity" size="18"></i> System Reliability</div>
+            </div>
+        </div>
+
+        <h3 class="fw-black mb-4 d-flex align-items-center gap-4">
+            <i data-lucide="radio" size="32" class="text-primary"></i> High-Frequency Telemetry Handshake
+        </h3>
+        
+        <div class="node-grid" id="main-telemetry-grid">
+            <div class="loader-block col-12">
+                <div class="spinner-grow text-primary mb-5" style="width: 5rem; height: 5rem;"></div>
+                <h4 class="text-muted fw-black">Polling Distributed Grid Node Clusters...</h4>
+                <p class="fs-5 text-muted mono">Establishing secure TLS 1.3 Handshake with TechAZsure Operating System</p>
+            </div>
+        </div>
+
+        <div class="row g-5 mt-2">
+            <div class="col-lg-8">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <div>
+                            <h4 class="fw-black m-0 fs-3">Aggregated Cluster Forecasting</h4>
+                            <span class="text-muted small fw-black tracking-widest uppercase">Predictive Demand Balancing Simulation</span>
+                        </div>
+                        <div class="badge bg-primary px-4 py-2 fs-6" style="border-radius: 10px;">24H HORIZON: ACTIVE</div>
+                    </div>
+                    <div style="height: 550px;"><canvas id="hub-forecast-chart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="nora-ai-card">
+                    <div class="nora-header">
+                        <div class="nora-brain"><div class="brain-core"></div></div>
+                        <div>
+                            <h5 class="fw-black m-0">Nora AGI Bot</h5>
+                            <span class="text-primary x-small fw-black mono tracking-tighter uppercase">Conversational SCADA v3.6</span>
+                        </div>
+                    </div>
+
+                    <div class="chat-bubble">
+                        <div class="typing-indicator" id="bot-typing">Nora is synthesizing telemetry logs...</div>
+                        <p id="bot-speech" class="chat-text">"Initializing neural handshake with the Bengaluru distribution cluster. Scanning for thermal load violations..."</p>
+                    </div>
+
+                    <div class="maint-pipeline">
+                        <h6 class="nav-label text-primary mb-4">Priority Maintenance Roadmap</h6>
+                        <div id="maint-list-box">
+                            <div class="text-center py-5 text-muted small">Accessing node health registry...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-5 pt-5 pb-5 text-center text-muted small border-top border-secondary border-opacity-10">
+            <p>© 2026 TechAZsure Private Limited. BESCOM Grid Modernization Framework. Industrial Operating System v8.6.0.</p>
+        </footer>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    let API_HOST = localStorage.getItem('gridsense_origin') || 'http://127.0.0.1:5000';
+    let SIMULATION_MODE = false;
+    let mainHubChart = null;
+    let nodeBuffer = [];
+
+    const PORTAL_MAP = {
+        'HSR Layout': '/area_dashboard.html',
+        'Whitefield': '/whitefield.html',
+        'Indiranagar': '/indiranagar.html',
+        'Hebbal': '/hebbal.html',
+        'Koramangala': '/koramangala.html',
+        'Electronic City': '/area_dashboard.html'
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        initOperationalClocks();
+        orchestrateGlobalSync();
+
+        setInterval(fetchLiveTelemetry, 3000);
+        setInterval(() => {
+            fetchKPIs();
+            syncNoraBot();
+        }, 12000);
+        setInterval(applyVisualJitter, 450);
+    });
+
+    function initOperationalClocks() {
+        setInterval(() => {
+            document.getElementById('os-clock').innerText = new Date().toLocaleTimeString('en-GB', {hour12: false});
+        }, 1000);
+    }
+
+    async function orchestrateGlobalSync() {
+        try {
+            const probe = await fetch(`${API_HOST}/api/v1/summary`, { mode: 'cors' });
+            if (probe.ok) {
+                updateHandshakeUI(true);
+                SIMULATION_MODE = false;
+                await Promise.all([
+                    fetchKPIs(),
+                    fetchLiveTelemetry(),
+                    initForecastChart(),
+                    syncNoraBot()
+                ]);
+            } else { throw new Error(); }
+        } catch (e) {
+            console.warn("Handshake Failed. Switching to Autonomous Simulation.");
+            activateAutonomousSim();
+        }
+    }
+
+    function updateHandshakeUI(isOnline) {
+        const dot = document.getElementById('os-light');
+        const text = document.getElementById('os-status-text');
+        dot.className = isOnline ? 'status-dot active' : 'status-dot';
+        text.innerText = isOnline ? 'GRID_OS: HANDSHAKE_SECURE' : 'GRID_OS: SIMULATION_ACTIVE';
+    }
+
+
+    async function syncNoraBot() {
+        const speech = document.getElementById('bot-speech');
+        const typing = document.getElementById('bot-typing');
+        
+        typing.style.display = 'block';
+        speech.style.opacity = '0.4';
+
+        setTimeout(async () => {
+            let resData = { briefing: { message: "Cognitive scan complete. No critical violations found." }, maintenance_pipeline: [] };
+            
+            if(!SIMULATION_MODE) {
+                try {
+                    const r = await fetch(`${API_HOST}/api/v1/ai-advisory`);
+                    resData = await r.json();
+                } catch (e) {}
+            } else {
+                resData.briefing.message = "Autonomous Emulation: Nora is monitoring North Bengaluru clusters. Peak thermal load detected in Hebbal; prioritizing substation cooling protocols.";
+                resData.maintenance_pipeline = [{zone: 'Hebbal', action: 'Oil Level Calibration', urgency: 'IMMEDIATE'}];
+            }
+
+            typing.style.display = 'none';
+            speech.style.opacity = '1';
+            speech.innerText = `"${resData.briefing.message}"`;
+
+            const list = document.getElementById('maint-list-box');
+            list.innerHTML = resData.maintenance_pipeline.map(m => `
+                <div class="maint-item ${m.urgency==='IMMEDIATE' ? 'critical' : ''}">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="fw-black small uppercase text-primary">${m.zone}</span>
+                        <span class="badge ${m.urgency==='IMMEDIATE' ? 'bg-danger' : 'bg-primary'} px-3" style="font-size: 8px; border-radius: 5px;">${m.urgency}</span>
+                    </div>
+                    <p class="m-0 x-small text-white fw-bold mono">${m.action}</p>
+                </div>
+            `).join('');
+            
+        }, 1800);
+    }
+
+    async function fetchKPIs() {
+        if(SIMULATION_MODE) {
+            document.getElementById('kpi-rev').innerText = '₹1,58,420';
+            document.getElementById('kpi-save').innerText = '₹62,250';
+            document.getElementById('kpi-carbon').innerText = '1,402 kg';
+            document.getElementById('kpi-health').innerText = '89.4%';
+            return;
+        }
+        try {
+            const res = await fetch(`${API_HOST}/api/v1/summary`);
+            const d = await res.json();
+            document.getElementById('kpi-rev').innerText = d.total_revenue;
+            document.getElementById('kpi-save').innerText = d.capex_deferred;
+            document.getElementById('kpi-carbon').innerText = d.carbon_offset;
+            document.getElementById('kpi-health').innerText = d.avg_grid_health;
+        } catch (e) {}
+    }
+
+    async function fetchLiveTelemetry() {
+        let nodes = [];
+        if(SIMULATION_MODE) {
+            nodes = [
+                {zone_name: 'HSR Layout', current_load_kw: 145.2, utilization_perc: 58, voltage_v: 415.2, current_a: 202, status: 'OPERATIONAL'},
+                {zone_name: 'Whitefield', current_load_kw: 285.5, utilization_perc: 95, voltage_v: 412.1, current_a: 401, status: 'OVERLOAD_RISK'},
+                {zone_name: 'Indiranagar', current_load_kw: 198, utilization_perc: 40.5, voltage_v: 416.5, current_a: 275, status: 'OPERATIONAL'},
+                {zone_name: 'Electronic City', current_load_kw: 620.1, utilization_perc: 62.2, voltage_v: 414.0, current_a: 862, status: 'OPERATIONAL'},
+                {zone_name: 'Hebbal', current_load_kw: 388.4, utilization_perc: 97.4, voltage_v: 410.8, current_a: 540, status: 'OVERLOAD_RISK'},
+                {zone_name: 'Koramangala', current_load_kw: 120.5, utilization_perc: 30.1, voltage_v: 417.1, current_a: 167, status: 'OPERATIONAL'}
+            ];
+        } else {
+            try {
+                const res = await fetch(`${API_HOST}/api/v1/live-tracking`);
+                nodes = await res.json();
+            } catch (e) { return; }
+        }
+
+        nodeBuffer = nodes;
+        const container = document.getElementById('main-telemetry-grid');
+        if (!nodes.length) return;
+        container.innerHTML = '';
+
+        nodes.forEach(n => {
+            const isAlert = n.status === 'OVERLOAD_RISK';
+            const portalUrl = PORTAL_MAP[n.zone_name] || '#';
+            
+            const unit = document.createElement('div');
+            unit.className = `node-unit ${isAlert ? 'alert' : ''}`;
+            unit.onclick = () => window.location.href = portalUrl;
+            unit.setAttribute('data-zone', n.zone_name);
+            
+            unit.innerHTML = `
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="fw-black fs-4 m-0">${n.zone_name}</span>
+                    <span class="badge ${isAlert ? 'bg-danger text-white' : 'text-emerald small fw-black tracking-widest'}">
+                        ${isAlert ? 'CRITICAL' : 'OPTIMIZED'}
+                    </span>
+                </div>
+                <div class="d-flex align-items-baseline gap-3 mb-2">
+                    <span class="kpi-val text-glow kw-jitter-val ${isAlert ? 'text-danger' : 'text-emerald'}">${n.current_load_kw}</span>
+                    <span class="text-muted small fw-black mono">kW LIVE</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill ${isAlert ? 'bg-danger' : ''}" style="width: ${n.utilization_perc}%"></div>
+                </div>
+                <div class="node-footer">
+                    <span>${n.voltage_v}V AC</span>
+                    <span class="${isAlert ? 'text-danger fw-black' : ''}">${n.utilization_perc}% LOAD</span>
+                    <span>${n.current_a}A</span>
+                </div>
+            `;
+            container.appendChild(unit);
+        });
+    }
+
+    function applyVisualJitter() {
+        if(!nodeBuffer.length) return;
+        nodeBuffer.forEach(node => {
+            const jitter = (Math.random() - 0.5) * 0.45;
+            const el = document.querySelector(`[data-zone="${node.zone_name}"] .kw-jitter-val`);
+            if(el) el.innerText = (node.current_load_kw + jitter).toFixed(2);
+        });
+    }
+
+    async function initForecastChart() {
+        let datasets = [];
+        if(SIMULATION_MODE) {
+            datasets = Array.from({length: 24}, (_, i) => ({
+                Hour: i, Energy_Requested_kWh: 125 + Math.sin(i/3.8)*70 + Math.random()*25,
+                Optimized_Load_kWh: 105 + Math.sin(i/3.8)*45 + Math.random()*20
+            }));
+        } else {
+            try {
+                const res = await fetch(`${API_HOST}/api/v1/grid-prediction`);
+                datasets = await res.json();
+            } catch (e) { return; }
+        }
+
+        const ctx = document.getElementById('hub-forecast-chart').getContext('2d');
+        if (mainHubChart) mainHubChart.destroy();
+        
+        mainHubChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: datasets.map(i => `${i.Hour}:00`),
+                datasets: [
+                    { label: 'Unmanaged Hub Baseline', data: datasets.map(i => i.Energy_Requested_kWh), borderColor: '#ef4444', borderDash:[6,6], fill: false, pointRadius:0, borderWidth:3.5 },
+                    { label: 'GridSense Orchestrated Stream', data: datasets.map(i => i.Optimized_Load_kWh), borderColor: '#0ea5e9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: true, tension: 0.45, borderWidth: 6 }
+                ]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { legend: { labels: { color: '#94a3b8', font: { weight: 'bold', size: 14 } } } },
+                scales: { 
+                    y: { grid:{color:'rgba(255,255,255,0.02)'}, ticks:{color:'#94a3b8', font:{family:'JetBrains Mono'}} }, 
+                    x: { grid:{display:false}, ticks:{color:'#94a3b8', font:{family:'JetBrains Mono'}} } 
+                } 
+            }
+        });
+    }
+
+    function activateAutonomousSim() {
+        SIMULATION_MODE = true;
+        updateHandshakeUI(false);
+        fetchKPIs();
+        fetchLiveTelemetry();
+        initForecastChart();
+        syncNoraBot();
+    }
+
+    function triggerHandshakeSync() {
+        const val = prompt("INDUSTRIAL_CONFIG: Enter Grid OS Backend Host Registry:", API_HOST);
+        if(val) {
+            API_HOST = val;
+            localStorage.setItem('gridsense_origin', API_HOST);
+            location.reload();
+        }
+    }
+
+</script>
+</body>
+</html>

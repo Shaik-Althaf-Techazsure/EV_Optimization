@@ -1,0 +1,27 @@
+2026-05-06 15:46:40,157 - GridSense-Core - INFO - [104DFBD0] - --- TECHAZSURE GRIDSENSE OS BOOT SEQUENCE: TZ-OS-9F8DF2 ---
+2026-05-06 15:46:41,563 - GridSense-Core - INFO - [37F19C81] - MySQL Connection Pool successfully established.
+2026-05-06 15:46:41,563 - GridSense-Core - INFO - [5D421D8B] - GridSense Core v7.2.1-Stable is ready for telemetry.
+2026-05-06 15:46:58,043 - GridSense-Core - INFO - [EE541DC4] - MySQL Connection Pool successfully established.
+2026-05-06 15:46:58,043 - GridSense-Core - INFO - [5ADB217C] - GridSense Enterprise Backend v7.2.2-Stable is booting...
+2026-05-06 15:49:44,426 - mysql.connector - INFO - [SYSTEM] - package: mysql.connector.plugins
+2026-05-06 15:49:44,435 - mysql.connector - INFO - [SYSTEM] - plugin_name: mysql_native_password
+2026-05-06 15:49:44,435 - mysql.connector - INFO - [SYSTEM] - AUTHENTICATION_PLUGIN_CLASS: MySQLNativePasswordAuthPlugin
+2026-05-06 15:49:45,686 - GridSense-Core - INFO - [SYSTEM] - MySQL Connection Pool successfully established.
+2026-05-06 15:49:45,686 - GridSense-Core - INFO - [SYSTEM] - GridSense Enterprise Backend v7.2.4-Stable is booting...
+2026-05-06 15:49:45,726 - werkzeug - INFO - [SYSTEM] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.5:5000
+2026-05-06 15:49:45,726 - werkzeug - INFO - [SYSTEM] - [33mPress CTRL+C to quit[0m
+2026-05-06 15:49:48,794 - werkzeug - INFO - [SYSTEM] - 192.168.0.5 - - [06/May/2026 15:49:48] "GET / HTTP/1.1" 200 -
+2026-05-06 16:25:56,889 - mysql.connector - INFO - [SYSTEM] - package: mysql.connector.plugins
+2026-05-06 16:25:56,891 - mysql.connector - INFO - [SYSTEM] - plugin_name: mysql_native_password
+2026-05-06 16:25:56,893 - mysql.connector - INFO - [SYSTEM] - AUTHENTICATION_PLUGIN_CLASS: MySQLNativePasswordAuthPlugin
+2026-05-06 16:25:58,160 - GridSense-Core - INFO - [SYSTEM] - MySQL Connection Pool successfully established.
+2026-05-06 16:25:58,160 - GridSense-Core - INFO - [SYSTEM] - GridSense Enterprise Backend v7.2.6-Stable is booting...
+2026-05-06 16:25:58,198 - werkzeug - INFO - [SYSTEM] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.5:5000
+2026-05-06 16:25:58,200 - werkzeug - INFO - [SYSTEM] - [33mPress CTRL+C to quit[0m
+2026-05-06 16:26:01,870 - werkzeug - INFO - [SYSTEM] - 192.168.0.5 - - [06/May/2026 16:26:01] "GET / HTTP/1.1" 200 -

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechAZsure | Load Balancing Intelligence (Industrial Grade)</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --tz-primary: #0ea5e9;
+            --tz-primary-glow: rgba(14, 165, 233, 0.4);
+            --tz-bg: #020617;
+            --tz-sidebar: #0f172a;
+            --tz-card: #1e293b;
+            --tz-border: #334155;
+            --tz-text: #f1f5f9;
+            --tz-text-muted: #94a3b8;
+            --tz-success: #10b981;
+            --tz-danger: #ef4444;
+            --tz-warning: #f59e0b;
+            --tz-info: #06b6d4;
+
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-industrial: 0 40px 80px -20px rgba(0, 0, 0, 0.9);
+            --glass-bg: rgba(15, 23, 42, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; border: none; outline: none !important; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--tz-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--tz-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--tz-primary); }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--tz-bg);
+            color: var(--tz-text);
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .top-nav {
+            background: var(--tz-sidebar);
+            border-bottom: 1px solid var(--tz-border);
+            padding: 1.25rem 3rem;
+            position: sticky;
+            top: 0;
+            z-index: 3000;
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-zone { display: flex; align-items: center; gap: 15px; text-decoration: none; }
+        .logo-frame {
+            width: 44px; height: 42px;
+            background: linear-gradient(135deg, var(--tz-primary), var(--tz-info));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 25px var(--tz-primary-glow);
+        }
+
+        .area-hero {
+            padding: 6rem 4rem; 
+            background: linear-gradient(145deg, #1e293b 0%, #020617 100%);
+            border-bottom: 2px solid var(--tz-border);
+            position: relative; overflow: hidden;
+        }
+        .hero-bg-fx { 
+            position: absolute; top: -20%; right: -5%; width: 55%; height: 160%; 
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.12) 0%, transparent 75%); 
+            filter: blur(80px); pointer-events: none; 
+        }
+
+        .status-badge-live {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--tz-primary);
+            border: 1px solid var(--tz-primary);
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .live-dot { width: 8px; height: 8px; background: var(--tz-primary); border-radius: 50%; box-shadow: 0 0 12px var(--tz-primary); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.75rem; margin-top: -4.5rem; padding: 0 4rem; position: relative; z-index: 100; }
+        .metric-card {
+            background: var(--glass-bg); backdrop-filter: blur(40px);
+            border: 1.5px solid var(--glass-border); border-radius: 2.75rem;
+            padding: 3rem; transition: var(--transition-smooth);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .metric-card:hover { transform: translateY(-12px); border-color: var(--tz-primary); box-shadow: var(--shadow-industrial); }
+
+        .m-tag { font-size: 0.7rem; font-weight: 900; color: var(--tz-text-muted); text-transform: uppercase; letter-spacing: 0.2em; display: block; margin-bottom: 1.5rem; }
+        .m-val { font-size: 3.25rem; font-weight: 900; color: white; line-height: 1; letter-spacing: -0.05em; display: flex; align-items: baseline; }
+        .m-unit { font-size: 1.15rem; color: var(--tz-text-muted); font-weight: 700; margin-left: 10px; }
+        .m-trend { font-size: 0.9rem; margin-top: 1.5rem; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+
+        .main-container { padding: 5rem 4rem; }
+        .data-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
+        .data-section-title { font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; gap: 20px; }
+
+        .analytics-block { display: grid; grid-template-columns: 2.2fr 1fr; gap: 2.5rem; margin-bottom: 4rem; }
+        .chart-card { background: var(--tz-card); border: 1.5px solid var(--tz-border); border-radius: 3rem; padding: 3.5rem; position: relative; }
+        
+        .balancing-matrix { background: rgba(255,255,255,0.02); border: 1.5px solid var(--tz-border); border-radius: 3rem; padding: 3rem; }
+        .zone-row { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .zone-row:last-child { border-bottom: none; }
+        .zone-status-box { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .status-ok { background: rgba(16, 185, 129, 0.12); color: var(--tz-success); }
+        .status-warn { background: rgba(245, 158, 11, 0.12); color: var(--tz-warning); }
+
+        .orchestration-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 4rem; }
+        .orch-card { background: var(--tz-card); border-radius: 2.5rem; padding: 2.5rem; border: 1px solid var(--tz-border); position: relative; }
+        .orch-icon { position: absolute; top: 2.5rem; right: 2.5rem; color: var(--tz-primary); opacity: 0.5; }
+
+        .audit-frame { background: #01040a; border: 2px solid var(--tz-border); border-radius: 3rem; padding: 4rem; box-shadow: inset 0 0 80px rgba(0,0,0,0.8); }
+        .audit-log { max-height: 600px; overflow-y: auto; padding-right: 2rem; scrollbar-width: thin; }
+        .audit-line { display: flex; align-items: center; gap: 40px; padding: 1.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .a-ts { color: var(--tz-text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-width: 240px; }
+        .a-code { background: rgba(14, 165, 233, 0.12); color: var(--tz-primary); padding: 8px 18px; border-radius: 10px; font-weight: 900; font-size: 0.75rem; border: 1.5px solid var(--tz-primary); min-width: 180px; text-align: center; }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .fw-black { font-weight: 900; }
+        .text-glow { text-shadow: 0 0 30px var(--tz-primary-glow); }
+        .btn-action-industrial { background: var(--tz-primary); color: white; padding: 1rem 3rem; border-radius: 1.5rem; font-weight: 900; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.2em; transition: var(--transition-smooth); box-shadow: 0 15px 30px var(--tz-primary-glow); }
+        .btn-action-industrial:hover { transform: translateY(-5px); background: white; color: var(--tz-primary); }
+
+        .progress-industrial { height: 8px; background: #020617; border-radius: 30px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--tz-primary); transition: width 1.5s ease; }
+
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="d-flex align-items-center gap-5">
+        <a href="index.html" class="brand-zone">
+            <div class="logo-frame"><i data-lucide="zap" color="white" size="28"></i></div>
+            <div>
+                <h4 class="m-0 fw-black text-white">GridSense</h4>
+                <span class="text-primary small fw-black tracking-widest" style="font-size: 0.65rem;">LOAD BALANCING HUB</span>
+            </div>
+        </a>
+        <div class="d-none d-xl-flex gap-5">
+            <a href="index.html" class="text-muted text-decoration-none small fw-black tracking-widest">CLUSTER OVERVIEW</a>
+            <a href="#" class="text-white text-decoration-none small fw-black tracking-widest border-bottom border-primary pb-1">PART A: LOAD SHIFT</a>
+            <a href="#" class="text-muted text-decoration-none small fw-black tracking-widest">PART B: INFRASTRUCTURE</a>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-5">
+        <div class="status-badge-live">
+            <div class="live-dot"></div>
+            <span class="mono">PREDICTIVE_ENGINE: ACTIVE</span>
+        </div>
+        <button class="btn-action-industrial" onclick="window.print()">EXPORT SCADA LOG</button>
+    </div>
+</nav>
+
+<section class="area-hero">
+    <div class="hero-bg-fx"></div>
+    <div class="row align-items-center position-relative">
+        <div class="col-lg-8">
+            <div class="badge bg-primary bg-opacity-10 text-primary fw-black px-4 py-2 mb-4" style="font-size: 12px; letter-spacing: 0.25em; border-radius: 8px;">PART A: PREDICTIVE LOAD ORCHESTRATION</div>
+            <h1 class="display-1 fw-black text-white m-0" style="letter-spacing: -0.04em;">DEMAND SHIFTING</h1>
+            <p class="text-muted display-6 mt-3 fw-bold">Multi-Horizon Demand Forecasting & Grid Stability Protocol</p>
+            
+            <div class="d-flex gap-5 mt-5 pt-4">
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Algorithm Version</span>
+                    <span class="text-cyan fw-bold fs-3">X-BALANCER v2.4</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Prediction Accuracy</span>
+                    <span class="text-emerald fw-bold fs-3">96.42% (R²)</span>
+                </div>
+                <div class="mono">
+                    <span class="text-muted d-block uppercase mb-2 fw-black small">Training Window</span>
+                    <span class="text-primary fw-bold fs-3">90 DAYS CONTINUOUS</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 text-end">
+            <div class="glass-card d-inline-block text-start p-5" style="min-width: 420px; border-radius: 3.5rem;">
+                <span class="m-tag mb-4">Regional Peak Load Status</span>
+                <div class="d-flex align-items-center gap-5">
+                    <div class=" health-dial" style="width:120px; height:120px; border: 8px solid #0f172a; border-radius: 50%; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+                        <div class="stat-value text-success display-4 fw-black">12%</div>
+                        <span class="x-small text-muted fw-bold">REDUCED</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="progress-industrial mb-3">
+                            <div class="progress-fill" style="width: 82%;"></div>
+                        </div>
+                        <span class="x-small text-muted mono fw-black">TARGET: 22.5% SHIFT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="metric-grid">
+    <div class="metric-card">
+        <span class="m-tag">Managed Energy Flow</span>
+        <div class="m-val"><span id="m-flow">4,285.4</span><span class="m-unit">MWh</span></div>
+        <div class="m-trend text-success"><i data-lucide="trending-up" size="18"></i> 100% Demand Met</div>
+    </div>
+    <div class="metric-card">
+        <span class="m-tag">Optimized Load Yield</span>
+        <div class="m-val text-glow"><span id="m-yield">21.4</span><span class="m-unit">%</span></div>
+        <div class="m-trend text-info"><i data-lucide="activity" size="18"></i> Phase Balancing Enabled</div>
+    </div>
+    <div class="metric-card border-danger border-opacity-40">
+        <span class="m-tag text-danger">Averted Peak Violations</span>
+        <div class="m-val text-danger"><span id="m-viol">1,204</span></div>
+        <div class="m-trend text-danger fw-black">₹6.6M CAPEX PROTECTED</div>
+    </div>
+    <div class="metric-card border-emerald border-opacity-40">
+        <span class="m-tag text-emerald">Efficiency ROI</span>
+        <div class="m-val text-emerald">₹<span id="m-roi">42,500</span></div>
+        <div class="m-trend text-emerald fw-bold"><i data-lucide="zap" size="18"></i> Daily Grid Performance</div>
+    </div>
+</section>
+
+<main class="main-container">
+
+    <div class="analytics-block">
+
+        <div class="chart-card">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h4 class="fw-black m-0 fs-3">Cluster Load Orchestration</h4>
+                    <span class="text-muted small fw-bold tracking-widest uppercase">Aggregated Regional Baseline vs Intelligent Optimized Curve</span>
+                </div>
+                <div class="badge bg-danger px-4 py-2 fs-6 d-flex align-items-center gap-2">
+                    <div class="live-dot" style="background:white;"></div>
+                    REAL-TIME SCADA FEED
+                </div>
+            </div>
+            <div style="height: 550px;"><canvas id="balancing-main-chart"></canvas></div>
+        </div>
+
+        <div class="d-flex flex-column gap-4">
+            <div class="fleet-matrix">
+                <span class="data-module-title"><i data-lucide="layers" class="text-primary"></i> Regional Node Status</span>
+                
+                <div class="zone-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="zone-status-box status-ok"><i data-lucide="check-circle" size="20"></i></div>
+                        <span class="fleet-label">HSR Layout</span>
+                    </div>
+                    <span class="fleet-count">92%</span>
+                </div>
+                
+                <div class="zone-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="zone-status-box status-warn"><i data-lucide="alert-triangle" size="20"></i></div>
+                        <span class="fleet-label">Whitefield</span>
+                    </div>
+                    <span class="fleet-count text-warning">74%</span>
+                </div>
+
+                <div class="zone-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="zone-status-box status-ok"><i data-lucide="check-circle" size="20"></i></div>
+                        <span class="fleet-label">Indiranagar</span>
+                    </div>
+                    <span class="fleet-count">88%</span>
+                </div>
+
+                <div class="zone-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="zone-status-box status-ok"><i data-lucide="check-circle" size="20"></i></div>
+                        <span class="fleet-label">Electronic City</span>
+                    </div>
+                    <span class="fleet-count">95%</span>
+                </div>
+
+                <div class="zone-row">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="zone-status-box status-warn"><i data-lucide="alert-triangle" size="20"></i></div>
+                        <span class="fleet-label">Hebbal</span>
+                    </div>
+                    <span class="fleet-count text-danger">42%</span>
+                </div>
+
+                <div class="zone-row border-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="zone-status-box status-ok"><i data-lucide="check-circle" size="20"></i></div>
+                        <span class="fleet-label">Koramangala</span>
+                    </div>
+                    <span class="fleet-count">90%</span>
+                </div>
+            </div>
+
+            <div class="metric-card border-primary border-opacity-50 p-4" style="border-radius: 2.25rem;">
+                <h6 class="text-primary fw-black mb-3 d-flex align-items-center gap-3 uppercase" style="font-size: 0.75rem; letter-spacing: 0.2em;">
+                    <i data-lucide="brain-circuit" size="20"></i> ML Insight
+                </h6>
+                <p class="small text-muted m-0 italic">"Shift detected: 142kWh from Whitefield Hub diverted to trough window (03:00). Grid safety factor increased by 8.4%."</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-section-header mt-5">
+        <h3 class="fw-black m-0 d-flex align-items-center gap-3">
+            <i data-lucide="activity" class="text-primary"></i> 
+            Balancing Optimization Parameters
+        </h3>
+        <span class="badge bg-dark border border-secondary px-4 py-2 mono text-muted">ORCHESTRATOR_RUN_ID: TZ_9921_BAL</span>
+    </div>
+
+    <div class="orchestration-grid">
+        <div class="orch-card">
+            <i data-lucide="clock-4" class="orch-icon"></i>
+            <span class="m-tag">Target Peak Window</span>
+            <h4 class="fw-black text-white">18:00 - 22:00</h4>
+            <p class="x-small text-muted mt-3">Machine learning identifies this window as the primary stress vector for the transformer network.</p>
+        </div>
+        <div class="orch-card">
+            <i data-lucide="shuffle" class="orch-icon"></i>
+            <span class="m-tag">Load Shift Target</span>
+            <h4 class="fw-black text-white">22.5% Volumetric</h4>
+            <p class="x-small text-muted mt-3">Calculated to maintain thermal headroom > 15% across all regional hubs.</p>
+        </div>
+        <div class="orch-card">
+            <i data-lucide="database" class="orch-icon"></i>
+            <span class="m-tag">Training Accuracy</span>
+            <h4 class="fw-black text-emerald">96.4% Precision</h4>
+            <p class="x-small text-muted mt-3">Model trained on 900,000+ data points from the 2026 EV Grid Dataset.</p>
+        </div>
+    </div>
+
+    <div class="data-section-header mt-5">
+        <h3 class="fw-black m-0 d-flex align-items-center gap-3">
+            <i data-lucide="terminal" class="text-primary"></i> 
+            Autonomous Orchestration Audit Trail
+        </h3>
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 mono fw-black">SECURE_AGI_HANDSHAKE</span>
+    </div>
+    
+    <div class="audit-frame">
+        <div class="audit-log" id="balancing-ledger">
+        </div>
+    </div>
+
+</main>
+
+<footer class="mt-5 pt-5 pb-5 text-center text-muted small border-top border-secondary border-opacity-10">
+    <p>© 2026 TechAZsure Private Limited. BESCOM Industrial Grid Command & Control Interface. Protocol: PART_A_ORCHESTRATION_V1.1</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const CONFIG = {
+        JITTER_MS: 400,
+        LOG_FREQ_MS: 3000,
+        BASE_ENERGY: 4285.4
+    };
+
+    let balancingState = {
+        energy: CONFIG.BASE_ENERGY,
+        yield: 21.4,
+        roi: 42500
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        initGlobalChart();
+
+        setInterval(executeTelemetryJitter, CONFIG.JITTER_MS);
+        setInterval(generateAuditPulse, CONFIG.LOG_FREQ_MS);
+        
+        setInterval(() => {
+            document.getElementById('os-clock').innerText = new Date().toLocaleTimeString('en-GB', {hour12:false});
+        }, 1000);
+    });
+
+    function executeTelemetryJitter() {
+        const jitter = (Math.random() - 0.5) * 0.85;
+        balancingState.energy = Math.max(100, balancingState.energy + jitter);
+        
+        document.getElementById('m-flow').innerText = balancingState.energy.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
+        document.getElementById('m-yield').innerText = (balancingState.yield + (Math.random() * 0.2)).toFixed(1);
+        document.getElementById('m-roi').innerText = Math.floor(balancingState.roi + (Math.random() * 50)).toLocaleString();
+    }
+
+    function generateAuditPulse() {
+        const events = ['ML_LOAD_PREDICT', 'GRID_THRESHOLD_CHECK', 'PHASE_SHIFT_CMD', 'PEAK_VOLT_SYNC', 'ROI_SETTLEMENT'];
+        const evt = events[Math.floor(Math.random() * events.length)];
+        
+        const window = document.getElementById('balancing-ledger');
+        const row = document.createElement('div');
+        row.className = 'audit-line';
+        row.innerHTML = `
+            <span class="a-ts">${new Date().toLocaleString('en-GB')}</span>
+            <span class="a-code">${evt}</span>
+            <span class="flex-grow-1 text-muted fw-bold small">Balancing Agent: Diverting 142kWh from Peak to Trough Window. Stability Index Corrected.</span>
+            <span class="text-success fw-black mono small">[ACTIVE]</span>
+        `;
+        window.prepend(row);
+        if(window.children.length > 50) window.lastChild.remove();
+    }
+
+    function initGlobalChart() {
+        const ctx = document.getElementById('balancing-main-chart').getContext('2d');
+        const hours = Array.from({length: 24}, (_, i) => `${i}:00`);
+        const actual = hours.map((_, i) => 200 + Math.sin(i/3.5)*120 + Math.random()*30);
+        const optimized = actual.map((v, i) => (i >= 18 && i <= 22) ? v * 0.78 : v);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: hours,
+                datasets: [
+                    { label: 'Unmanaged Hub Baseline', data: actual, borderColor: '#ef4444', borderDash:[5,5], fill: false, pointRadius:0, borderWidth: 3 },
+                    { label: 'GridSense Orchestrated Stream', data: optimized, borderColor: '#0ea5e9', backgroundColor: 'rgba(14, 165, 233, 0.1)', fill: true, tension: 0.4, borderWidth: 5 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8', font: { weight: '800', size: 14 } } } },
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono' } } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono' } } }
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
